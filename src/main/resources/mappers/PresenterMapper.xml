@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.solvd.persistence.PresenterDAO">
+    <resultMap id="PresenterResultMap" type="com.solvd.domain.Presenter" autoMapping="false">
+        <id property="id" column="id"/>
+        <result property="cuil" column="cuil"/>
+        <result property="firstName" column="first_name"/>
+        <result property="lastName" column="last_name"/>
+        <result property="address" column="address"/>
+        <result property="phone" column="phone"/>
+        <result property="email" column="email"/>
+        <result property="specialization" column="specialization"/>
+        <collection property="presentations" columnPrefix="presentation_"
+                    resultMap="com.solvd.persistence.PresentationDAO.PresentationResultMap"/>
+    </resultMap>
+
+    <insert id="create" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
+        Insert into presenter (cuil, first_name, last_name, address, phone, email, specialization)
+        values (#{presenter.cuil}, #{presenter.firstName}, #{presenter.lastName}, #{presenter.address}, #{presenter.phone}, #{presenter.email},
+        #{presenter.specialization})
+    </insert>
+
+    <sql id="selectPresenter">
+        Select
+        p.id as presenter_id, p.first_name as presenter_first_name, p.last_name as presenter_last_name, p.address as presenter_address, p.phone as
+        presenter_phone, p.email as presenter_email, p.specialization as presenter_specialization,
+        pr.id as presentation_id, pr.name as presentation_name, pr.description as presentation_description, pr.start_datetime as
+        presentation_start_datetime, pr.end_datetime as presentation_end_datetime, pr.ticket_price as presentation_ticket_price, pr.room_id as
+        presentation_room_id, pr.presenter_id as presentation_presenter_id
+        from presenter p
+        left join presentation pr on p.id = pr.presenter_id
+    </sql>
+
+    <select id="findAll">
+        <include refid="selectPresenter"/>
+    </select>
+
+    <select id="findById">
+        <include refid="selectPresenter"/>
+        where p.id = #{id}
+    </select>
+
+    <select id="findManyByColumn">
+        <include refid="selectPresenter"/>
+        where p.#{key} = #{value}
+    </select>
+
+    <select id="findOneByColumn">
+        <include refid="selectPresenter"/>
+        where p.#{key} = #{value}
+    </select>
+
+    <delete id="deleteById">
+        Delete from presenter where id = #{id}
+    </delete>
+
+    <update id="updateById">
+        Update presenter set
+        cuil = #{presenter.cuil},
+        first_name = #{presenter.firstName},
+        last_name = #{presenter.lastName},
+        address = #{presenter.address},
+        phone = #{presenter.phone},
+        email = #{presenter.email},
+        specialization = #{presenter.specialization}
+        where id = #{id}
+    </update>
+</mapper>

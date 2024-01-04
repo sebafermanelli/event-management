@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.solvd.persistence.StandDAO">
+    <resultMap id="StandResultMap" type="com.solvd.domain.Stand" autoMapping="false">
+        <id property="id" column="stand_id"/>
+        <result property="price" column="price"/>
+        <result property="roomId" column="room_id"/>
+        <result property="clientId" column="client_id"/>
+    </resultMap>
+
+    <insert id="create" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
+        Insert into stand (price, room_id, client_id)
+        values (#{stand.price}, #{stand.roomId}, #{stand.clientId})
+    </insert>
+
+    <sql id="selectStand">
+        Select
+        s.id,
+        s.price,
+        s.room_id,
+        s.client_id
+        from stand s
+    </sql>
+
+    <select id="findAll">
+        <include refid="selectStand"/>
+    </select>
+
+    <select id="findById">
+        <include refid="selectStand"/>
+        where s.id = #{id}
+    </select>
+
+    <select id="findManyByColumn">
+        <include refid="selectStand"/>
+        where s.${key} = #{value}
+    </select>
+
+    <select id="findOneByColumn">
+        <include refid="selectStand"/>
+        where s.#{key} = #{value}
+    </select>
+
+    <delete id="deleteById">
+        Delete from stand where id = #{id}
+    </delete>
+
+    <update id="updateById">
+        Update stand set
+        price = #{stand.price},
+        room_id = #{stand.roomId},
+        client_id = #{stand.clientId}
+        where id = #{id}
+    </update>
+</mapper>

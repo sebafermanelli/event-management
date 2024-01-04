@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.solvd.persistence.PresentationTicketDAO">
+    <resultMap id="PresentationTicketResultMap" type="com.solvd.domain.PresentationTicket" autoMapping="false">
+        <id property="id" column="id"/>
+        <result property="presentationId" column="presentation_id"/>
+        <result property="ticketId" column="ticket_id"/>
+    </resultMap>
+
+    <insert id="create" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
+        Insert into presentation_ticket (presentation_id, ticket_id)
+        values (#{presentationTicket.presentationId}, #{presentationTicket.ticketId})
+    </insert>
+
+    <sql id="selectPresentationTicket">
+        Select
+        pt.id as presentation_ticket_id, pt.presentation_id as presentation_ticket_presentation_id, pt.ticket_id as presentation_ticket_ticket_id,
+        p.id as presentation_id, p.name as presentation_name, p.description as presentation_description, p.start_datetime as
+        presentation_start_datetime, p.end_datetime as presentation_end_datetime, p.ticket_price as presentation_ticket_price, p.room_id as
+        presentation_room_id, p.presenter_id as presentation_presenter_id,
+        t.id as ticket_id, t.cost as ticket_cost, t.event_id as ticket_event_id, t.attendee_id as ticket_attendee_id, t.buyer_id as ticket_buyer_id
+        from presentation_ticket pt
+        left join presentation p on p.id = pt.presentation_id
+        left join ticket t on t.id = pt.ticket_id
+    </sql>
+
+    <select id="findAll">
+        <include refid="selectPresentationTicket"/>
+    </select>
+
+    <select id="findById">
+        <include refid="selectPresentationTicket"/>
+        where pt.id = #{id}
+    </select>
+
+    <select id="findManyByColumn">
+        <include refid="selectPresentationTicket"/>
+        where pt.#{key} = #{value}
+    </select>
+
+    <select id="findOneByColumn">
+        <include refid="selectPresentationTicket"/>
+        where pt.#{key} = #{value}
+    </select>
+
+    <delete id="deleteById">
+        Delete from presentation_ticket where id = #{id}
+    </delete>
+
+    <update id="updateById">
+        Update presentation_ticket set
+        presentation_id = #{presentationTicket.presentationId},
+        ticket_id = #{presentationTicket.ticketId}
+        where id = #{id}
+    </update>
+</mapper>

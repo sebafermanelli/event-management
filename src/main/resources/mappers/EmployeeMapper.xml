@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.solvd.persistence.EmployeeDAO">
+    <resultMap id="EmployeeResultMap" type="com.solvd.domain.Employee" autoMapping="false">
+        <id property="id" column="id"/>
+        <result property="cuil" column="cuil"/>
+        <result property="firstName" column="first_name"/>
+        <result property="lastName" column="last_name"/>
+        <result property="address" column="address"/>
+        <result property="phone" column="phone"/>
+        <result property="email" column="email"/>
+        <result property="salary" column="salary"/>
+        <collection property="events" columnPrefix="event_employee_" resultMap="com.solvd.persistence.EventEmployeeDAO.EventEmployeeResultMap"/>
+    </resultMap>
+
+    <insert id="create" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
+        Insert into employee (cuil, first_name, last_name, address, phone, email, salary)
+        values (#{employee.cuil}, #{employee.firstName}, #{employee.lastName}, #{employee.address}, #{employee.phone}, #{employee.email},
+        #{employee.salary})
+    </insert>
+
+    <sql id="selectEmployee">
+        Select
+        e.id as employee_id, e.first_name as employee_first_name, e.last_name as employee_last_name, e.address as employee_address, e.phone as
+        employee_phone, e.email as employee_email, e.salary as employee_salary,
+        ee.id as event_employee_id, ee.role as event_employee_role, ee.employee_id as event_employee_employee_id, ee.event_id as
+        event_employee_event_id
+        from employee e
+        left join event_employee ee on e.id = ee.employee_id
+    </sql>
+
+    <select id="findAll">
+        <include refid="selectEmployee"/>
+    </select>
+
+    <select id="findById">
+        <include refid="selectEmployee"/>
+        where e.id = #{id}
+    </select>
+
+    <select id="findManyByColumn">
+        <include refid="selectEmployee"/>
+        where e.#{key} = #{value}
+    </select>
+
+    <select id="findOneByColumn">
+        <include refid="selectEmployee"/>
+        where e.#{key} = #{value}
+    </select>
+
+    <delete id="deleteById">
+        Delete from employee where id = #{id}
+    </delete>
+
+    <update id="updateById">
+        Update employee set
+        cuil = #{employee.cuil},
+        first_name = #{employee.firstName},
+        last_name = #{employee.lastName},
+        address = #{employee.address},
+        phone = #{employee.phone},
+        email = #{employee.email},
+        salary = #{employee.salary}
+        where id = #{id}
+    </update>
+</mapper>

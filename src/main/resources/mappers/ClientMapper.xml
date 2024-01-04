@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.solvd.persistence.ClientDAO">
+    <resultMap id="ClientResultMap" type="com.solvd.domain.Client" autoMapping="false">
+        <id property="id" column="client_id"/>
+        <result property="cuit" column="cuit"/>
+        <result property="businessName" column="business_name"/>
+        <result property="address" column="address"/>
+        <result property="phone" column="phone"/>
+        <result property="email" column="email"/>
+        <collection property="stands" resultMap="StandResultMapClient"/>
+    </resultMap>
+
+    <resultMap id="StandResultMapClient" type="com.solvd.domain.Stand" autoMapping="false">
+        <id property="id" column="stand_id"/>
+        <result property="price" column="stand_price"/>
+        <result property="roomId" column="stand_room_id"/>
+    </resultMap>
+
+    <insert id="create" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
+        Insert into client (cuit, business_name, address, phone, email)
+        values (#{client.cuit}, #{client.businessName}, #{client.address}, #{client.phone}, #{client.email})
+    </insert>
+
+    <sql id="selectClient">
+        Select
+        c.id as client_id,
+        cuit,
+        business_name as "businessName",
+        address,
+        phone,
+        email,
+        s.id as stand_id,
+        price as stand_price,
+        room_id as stand_room_id
+        from client c
+        left join stand s on c.id = s.client_id
+    </sql>
+
+    <select id="findAll" resultType="com.solvd.domain.Client">
+        <include refid="selectClient"/>
+    </select>
+
+    <select id="findById">
+        <include refid="selectClient"/>
+        where c.id = #{id}
+    </select>
+
+    <select id="findManyByColumn">
+        <include refid="selectClient"/>
+        where c.${key} = #{value}
+    </select>
+
+    <select id="findOneByColumn">
+        <include refid="selectClient"/>
+        where c.#{key} = #{value}
+    </select>
+
+    <delete id="deleteById">
+        Delete from client where id = #{id}
+    </delete>
+
+    <update id="updateById">
+        Update client set
+        cuit = #{client.cuit},
+        business_name = #{client.businessName},
+        address = #{client.address},
+        phone = #{client.phone},
+        email = #{client.email}
+        where id = #{id}
+    </update>
+</mapper>
