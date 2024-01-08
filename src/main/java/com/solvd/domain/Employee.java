@@ -4,7 +4,8 @@ import java.util.List;
 
 public class Employee extends Person {
     private Long salary;
-    private List<EventEmployee> events;
+    private List<EventEmployee> roles;
+    private List<Event> events;
 
     public Long getSalary() {
         return salary;
@@ -14,11 +15,19 @@ public class Employee extends Person {
         this.salary = salary;
     }
 
-    public List<EventEmployee> getEvents() {
+    public List<EventEmployee> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<EventEmployee> roles) {
+        this.roles = roles;
+    }
+
+    public List<Event> getEvents() {
         return events;
     }
 
-    public void setEvents(List<EventEmployee> events) {
+    public void setEvents(List<Event> events) {
         this.events = events;
     }
 }

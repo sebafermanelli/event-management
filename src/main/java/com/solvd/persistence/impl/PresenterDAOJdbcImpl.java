@@ -1,6 +1,5 @@
 package com.solvd.persistence.impl;
 
-import com.solvd.domain.Presentation;
 import com.solvd.domain.Presenter;
 import com.solvd.persistence.AbstractDAO;
 import com.solvd.persistence.PersistenceConfigJdbc;
@@ -12,7 +11,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 
 public class PresenterDAOJdbcImpl extends AbstractDAO<Presenter> implements PresenterDAO {
@@ -32,7 +30,14 @@ public class PresenterDAOJdbcImpl extends AbstractDAO<Presenter> implements Pres
             stmt.setString(5, presenter.getPhone());
             stmt.setString(6, presenter.getEmail());
             stmt.setString(7, presenter.getSpecialization());
-            stmt.executeUpdate();
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected == 1) {
+                ResultSet rs = stmt.getGeneratedKeys();
+                if (rs.next()) {
+                    Long id = rs.getLong(1);
+                    presenter.setId(id);
+                }
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
@@ -56,10 +61,6 @@ public class PresenterDAOJdbcImpl extends AbstractDAO<Presenter> implements Pres
                 presenter.setPhone(resultSet.getString(6));
                 presenter.setEmail(resultSet.getString(7));
                 presenter.setSpecialization(resultSet.getString(8));
-                PresentationDAOJdbcImpl presentationDAOJdbc = new PresentationDAOJdbcImpl(connection);
-                Optional<Collection<Presentation>> presentations = presentationDAOJdbc.findManyByColumn("presenter_id",
-                        String.valueOf(resultSet.getLong(1)));
-                presentations.ifPresent(presentationsCollection -> presenter.setPresentations((List<Presentation>) presentationsCollection));
                 presenters.add(presenter);
             }
             return presenters;
@@ -86,10 +87,6 @@ public class PresenterDAOJdbcImpl extends AbstractDAO<Presenter> implements Pres
                 presenter.setPhone(resultSet.getString(6));
                 presenter.setEmail(resultSet.getString(7));
                 presenter.setSpecialization(resultSet.getString(8));
-                PresentationDAOJdbcImpl presentationDAOJdbc = new PresentationDAOJdbcImpl(connection);
-                Optional<Collection<Presentation>> presentations = presentationDAOJdbc.findManyByColumn("presenter_id",
-                        String.valueOf(resultSet.getLong(1)));
-                presentations.ifPresent(presentationsCollection -> presenter.setPresentations((List<Presentation>) presentationsCollection));
                 return Optional.of(presenter);
             } else {
                 return Optional.empty();
@@ -102,7 +99,7 @@ public class PresenterDAOJdbcImpl extends AbstractDAO<Presenter> implements Pres
     }
 
     @Override
-    public Optional<Collection<Presenter>> findManyByColumn(String key, String value) {
+    public Collection<Presenter> findManyByColumn(String key, String value) {
         String sql = "Select * from presenter where " + key + " = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, value);
@@ -118,13 +115,9 @@ public class PresenterDAOJdbcImpl extends AbstractDAO<Presenter> implements Pres
                 presenter.setPhone(resultSet.getString(6));
                 presenter.setEmail(resultSet.getString(7));
                 presenter.setSpecialization(resultSet.getString(8));
-                PresentationDAOJdbcImpl presentationDAOJdbc = new PresentationDAOJdbcImpl(connection);
-                Optional<Collection<Presentation>> presentations = presentationDAOJdbc.findManyByColumn("presenter_id",
-                        String.valueOf(resultSet.getLong(1)));
-                presentations.ifPresent(presentationsCollection -> presenter.setPresentations((List<Presentation>) presentationsCollection));
                 presenters.add(presenter);
             }
-            return Optional.of(presenters);
+            return presenters;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
@@ -148,10 +141,6 @@ public class PresenterDAOJdbcImpl extends AbstractDAO<Presenter> implements Pres
                 presenter.setPhone(resultSet.getString(6));
                 presenter.setEmail(resultSet.getString(7));
                 presenter.setSpecialization(resultSet.getString(8));
-                PresentationDAOJdbcImpl presentationDAOJdbc = new PresentationDAOJdbcImpl(connection);
-                Optional<Collection<Presentation>> presentations = presentationDAOJdbc.findManyByColumn("presenter_id",
-                        String.valueOf(resultSet.getLong(1)));
-                presentations.ifPresent(presentationsCollection -> presenter.setPresentations((List<Presentation>) presentationsCollection));
                 return Optional.of(presenter);
             } else {
                 return Optional.empty();

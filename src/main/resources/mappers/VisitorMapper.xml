@@ -12,13 +12,13 @@
         <result property="address" column="address"/>
         <result property="phone" column="phone"/>
         <result property="email" column="email"/>
-        <collection property="attendeeTickets" columnPrefix="attendee_ticket_"
+        <collection property="attendeeTickets" columnPrefix="attendee_"
                     resultMap="com.solvd.persistence.TicketDAO.TicketResultMap"/>
-        <collection property="buyerTickets" columnPrefix="buyer_ticket_"
+        <collection property="buyerTickets" columnPrefix="buyer_"
                     resultMap="com.solvd.persistence.TicketDAO.TicketResultMap"/>
     </resultMap>
 
-    <insert id="create" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
+    <insert id="save" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
         Insert into visitor (cuil, first_name, last_name, address, phone, email)
         values (#{visitor.cuil}, #{visitor.firstName}, #{visitor.lastName}, #{visitor.address}, #{visitor.phone}, #{visitor.email})
     </insert>
@@ -30,27 +30,27 @@
         at.id as attendee_ticket_id, at.cost as attendee_ticket_cost, at.event_id as attendee_ticket_event_id, at.attendee_id as
         attendee_ticket_attendee_id, at.buyer_id as attendee_ticket_buyer_id,
         bt.id as buyer_ticket_id, bt.cost as buyer_ticket_cost, bt.event_id as buyer_ticket_event_id, bt.attendee_id as
-        buyer_ticket_attendee_id, bt.buyer_id as buyer_ticket_buyer_id,
+        buyer_ticket_attendee_id, bt.buyer_id as buyer_ticket_buyer_id
         from visitor v
         left join ticket at on v.id = at.attendee_id
         left join ticket bt on v.id = bt.buyer_id
     </sql>
 
-    <select id="findAll">
+    <select id="findAll" resultMap="VisitorResultMap">
         <include refid="selectVisitor"/>
     </select>
 
-    <select id="findById">
+    <select id="findById" resultMap="VisitorResultMap">
         <include refid="selectVisitor"/>
         where v.id = #{id}
     </select>
 
-    <select id="findManyByColumn">
+    <select id="findManyByColumn" resultMap="VisitorResultMap">
         <include refid="selectVisitor"/>
         where v.#{key} = #{value}
     </select>
 
-    <select id="findOneByColumn">
+    <select id="findOneByColumn" resultMap="VisitorResultMap">
         <include refid="selectVisitor"/>
         where v.#{key} = #{value}
     </select>
@@ -60,7 +60,7 @@
     </delete>
 
     <update id="updateById">
-        Update visitr set
+        Update visitor set
         cuil = #{visitor.cuil},
         first_name = #{visitor.firstName},
         last_name = #{visitor.lastName},

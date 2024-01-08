@@ -1,8 +1,6 @@
 package com.solvd.persistence.impl;
 
-import com.solvd.domain.Presentation;
 import com.solvd.domain.Room;
-import com.solvd.domain.Stand;
 import com.solvd.persistence.AbstractDAO;
 import com.solvd.persistence.PersistenceConfigJdbc;
 import com.solvd.persistence.RoomDAO;
@@ -13,7 +11,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 
 public class RoomDAOJdbcImpl extends AbstractDAO<Room> implements RoomDAO {
@@ -24,19 +21,7 @@ public class RoomDAOJdbcImpl extends AbstractDAO<Room> implements RoomDAO {
 
     @Override
     public void save(Room room) {
-        String sql = "Insert into room (name, surface, capacity, status, event_id) values (?, ?, ?, ?, ?)";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setString(1, room.getName());
-            stmt.setLong(2, room.getSurface());
-            stmt.setLong(3, room.getCapacity());
-            stmt.setString(4, room.getStatus());
-            stmt.setLong(5, room.getEventId());
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } finally {
-            PersistenceConfigJdbc.releaseConnection(connection);
-        }
+//        Nothing here
     }
 
     @Override
@@ -52,14 +37,6 @@ public class RoomDAOJdbcImpl extends AbstractDAO<Room> implements RoomDAO {
                 room.setSurface(resultSet.getLong(3));
                 room.setCapacity(resultSet.getLong(4));
                 room.setStatus(resultSet.getString(5));
-                room.setEventId(resultSet.getLong(6));
-                PresentationDAOJdbcImpl presentationDAOJdbc = new PresentationDAOJdbcImpl(connection);
-                Optional<Collection<Presentation>> presentations = presentationDAOJdbc.findManyByColumn("room_id",
-                        String.valueOf(resultSet.getLong(1)));
-                presentations.ifPresent(presentationsCollection -> room.setPresentations((List<Presentation>) presentationsCollection));
-                StandDAOJdbcImpl standDAOJdbc = new StandDAOJdbcImpl(connection);
-                Optional<Collection<Stand>> stands = standDAOJdbc.findManyByColumn("room_id", String.valueOf(resultSet.getLong(1)));
-                stands.ifPresent(standsCollection -> room.setStands((List<Stand>) standsCollection));
                 rooms.add(room);
             }
             return rooms;
@@ -83,14 +60,6 @@ public class RoomDAOJdbcImpl extends AbstractDAO<Room> implements RoomDAO {
                 room.setSurface(resultSet.getLong(3));
                 room.setCapacity(resultSet.getLong(4));
                 room.setStatus(resultSet.getString(5));
-                room.setEventId(resultSet.getLong(6));
-                PresentationDAOJdbcImpl presentationDAOJdbc = new PresentationDAOJdbcImpl(connection);
-                Optional<Collection<Presentation>> presentations = presentationDAOJdbc.findManyByColumn("room_id",
-                        String.valueOf(resultSet.getLong(1)));
-                presentations.ifPresent(presentationsCollection -> room.setPresentations((List<Presentation>) presentationsCollection));
-                StandDAOJdbcImpl standDAOJdbc = new StandDAOJdbcImpl(connection);
-                Optional<Collection<Stand>> stands = standDAOJdbc.findManyByColumn("room_id", String.valueOf(resultSet.getLong(1)));
-                stands.ifPresent(standsCollection -> room.setStands((List<Stand>) standsCollection));
                 return Optional.of(room);
             } else {
                 return Optional.empty();
@@ -103,7 +72,7 @@ public class RoomDAOJdbcImpl extends AbstractDAO<Room> implements RoomDAO {
     }
 
     @Override
-    public Optional<Collection<Room>> findManyByColumn(String key, String value) {
+    public Collection<Room> findManyByColumn(String key, String value) {
         String sql = "Select * from room where " + key + " = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, value);
@@ -116,17 +85,9 @@ public class RoomDAOJdbcImpl extends AbstractDAO<Room> implements RoomDAO {
                 room.setSurface(resultSet.getLong(3));
                 room.setCapacity(resultSet.getLong(4));
                 room.setStatus(resultSet.getString(5));
-                room.setEventId(resultSet.getLong(6));
-                PresentationDAOJdbcImpl presentationDAOJdbc = new PresentationDAOJdbcImpl(connection);
-                Optional<Collection<Presentation>> presentations = presentationDAOJdbc.findManyByColumn("room_id",
-                        String.valueOf(resultSet.getLong(1)));
-                presentations.ifPresent(presentationsCollection -> room.setPresentations((List<Presentation>) presentationsCollection));
-                StandDAOJdbcImpl standDAOJdbc = new StandDAOJdbcImpl(connection);
-                Optional<Collection<Stand>> stands = standDAOJdbc.findManyByColumn("room_id", String.valueOf(resultSet.getLong(1)));
-                stands.ifPresent(standsCollection -> room.setStands((List<Stand>) standsCollection));
                 rooms.add(room);
             }
-            return Optional.of(rooms);
+            return rooms;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
@@ -147,14 +108,6 @@ public class RoomDAOJdbcImpl extends AbstractDAO<Room> implements RoomDAO {
                 room.setSurface(resultSet.getLong(3));
                 room.setCapacity(resultSet.getLong(4));
                 room.setStatus(resultSet.getString(5));
-                room.setEventId(resultSet.getLong(6));
-                PresentationDAOJdbcImpl presentationDAOJdbc = new PresentationDAOJdbcImpl(connection);
-                Optional<Collection<Presentation>> presentations = presentationDAOJdbc.findManyByColumn("room_id",
-                        String.valueOf(resultSet.getLong(1)));
-                presentations.ifPresent(presentationsCollection -> room.setPresentations((List<Presentation>) presentationsCollection));
-                StandDAOJdbcImpl standDAOJdbc = new StandDAOJdbcImpl(connection);
-                Optional<Collection<Stand>> stands = standDAOJdbc.findManyByColumn("room_id", String.valueOf(resultSet.getLong(1)));
-                stands.ifPresent(standsCollection -> room.setStands((List<Stand>) standsCollection));
                 return Optional.of(room);
             } else {
                 return Optional.empty();
@@ -181,15 +134,38 @@ public class RoomDAOJdbcImpl extends AbstractDAO<Room> implements RoomDAO {
 
     @Override
     public void updateById(Room room, Long id) {
-        String sql = "Update room set name = ?, surface = ?, capacity = ?, status = ?, event_id = ? where id = ?";
+        String sql = "Update room set name = ?, surface = ?, capacity = ?, status = ? where id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, room.getName());
             stmt.setLong(2, room.getSurface());
             stmt.setLong(3, room.getCapacity());
             stmt.setString(4, room.getStatus());
-            stmt.setLong(5, room.getEventId());
-            stmt.setLong(6, id);
+            stmt.setLong(5, id);
             stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            PersistenceConfigJdbc.releaseConnection(connection);
+        }
+    }
+
+    @Override
+    public void save(Room room, Long eventId) {
+        String sql = "Insert into room (name, surface, capacity, status, event_id) values (?, ?, ?, ?, ?)";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, room.getName());
+            stmt.setLong(2, room.getSurface());
+            stmt.setLong(3, room.getCapacity());
+            stmt.setString(4, room.getStatus());
+            stmt.setLong(5, eventId);
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected == 1) {
+                ResultSet rs = stmt.getGeneratedKeys();
+                if (rs.next()) {
+                    Long id = rs.getLong(1);
+                    room.setId(id);
+                }
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {

@@ -34,7 +34,7 @@ public class EmployeeDAOMybatisImpl implements EmployeeDAO {
     }
 
     @Override
-    public Optional<Collection<Employee>> findManyByColumn(String key, String value) {
+    public Collection<Employee> findManyByColumn(String key, String value) {
         try (SqlSession sqlSession = PersistenceConfigMybatis.getSessionFactory().openSession(true)) {
             EmployeeDAO employeeDAO = sqlSession.getMapper(EmployeeDAO.class);
             return employeeDAO.findManyByColumn(key, value);

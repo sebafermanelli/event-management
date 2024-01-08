@@ -57,17 +57,4 @@ public class Client extends BaseEntity {
     public void setStands(List<Stand> stands) {
         this.stands = stands;
     }
-
-    @Override
-    public String toString() {
-        return "Client{" +
-                "cuit='" + cuit + '\'' +
-                ", businessName='" + businessName + '\'' +
-                ", address='" + address + '\'' +
-                ", phone='" + phone + '\'' +
-                ", email='" + email + '\'' +
-                ", stands=" + stands +
-                ", id=" + id +
-                '}';
-    }
 }

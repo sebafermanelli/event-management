@@ -1,7 +1,6 @@
 package com.solvd.persistence.impl;
 
 import com.solvd.domain.Employee;
-import com.solvd.domain.EventEmployee;
 import com.solvd.persistence.AbstractDAO;
 import com.solvd.persistence.EmployeeDAO;
 import com.solvd.persistence.PersistenceConfigJdbc;
@@ -12,7 +11,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 
 public class EmployeeDAOJdbcImpl extends AbstractDAO<Employee> implements EmployeeDAO {
@@ -32,7 +30,14 @@ public class EmployeeDAOJdbcImpl extends AbstractDAO<Employee> implements Employ
             stmt.setString(5, employee.getPhone());
             stmt.setString(6, employee.getEmail());
             stmt.setLong(7, employee.getSalary());
-            stmt.executeUpdate();
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected == 1) {
+                ResultSet rs = stmt.getGeneratedKeys();
+                if (rs.next()) {
+                    Long id = rs.getLong(1);
+                    employee.setId(id);
+                }
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
@@ -56,10 +61,6 @@ public class EmployeeDAOJdbcImpl extends AbstractDAO<Employee> implements Employ
                 employee.setPhone(resultSet.getString(6));
                 employee.setEmail(resultSet.getString(7));
                 employee.setSalary(resultSet.getLong(8));
-                EventEmployeeDAOJdbcImpl eventEmployeeDAOJdbc = new EventEmployeeDAOJdbcImpl(connection);
-                Optional<Collection<EventEmployee>> events = eventEmployeeDAOJdbc.findManyByColumn("employee_id",
-                        String.valueOf(resultSet.getLong(1)));
-                events.ifPresent(eventsCollection -> employee.setEvents((List<EventEmployee>) eventsCollection));
                 employees.add(employee);
             }
             return employees;
@@ -86,10 +87,6 @@ public class EmployeeDAOJdbcImpl extends AbstractDAO<Employee> implements Employ
                 employee.setPhone(resultSet.getString(6));
                 employee.setEmail(resultSet.getString(7));
                 employee.setSalary(resultSet.getLong(8));
-                EventEmployeeDAOJdbcImpl eventEmployeeDAOJdbc = new EventEmployeeDAOJdbcImpl(connection);
-                Optional<Collection<EventEmployee>> events = eventEmployeeDAOJdbc.findManyByColumn("employee_id",
-                        String.valueOf(resultSet.getLong(1)));
-                events.ifPresent(eventsCollection -> employee.setEvents((List<EventEmployee>) eventsCollection));
                 return Optional.of(employee);
             } else {
                 return Optional.empty();
@@ -102,7 +99,7 @@ public class EmployeeDAOJdbcImpl extends AbstractDAO<Employee> implements Employ
     }
 
     @Override
-    public Optional<Collection<Employee>> findManyByColumn(String key, String value) {
+    public Collection<Employee> findManyByColumn(String key, String value) {
         String sql = "Select * from employee where " + key + " = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, value);
@@ -118,13 +115,9 @@ public class EmployeeDAOJdbcImpl extends AbstractDAO<Employee> implements Employ
                 employee.setPhone(resultSet.getString(6));
                 employee.setEmail(resultSet.getString(7));
                 employee.setSalary(resultSet.getLong(8));
-                EventEmployeeDAOJdbcImpl eventEmployeeDAOJdbc = new EventEmployeeDAOJdbcImpl(connection);
-                Optional<Collection<EventEmployee>> events = eventEmployeeDAOJdbc.findManyByColumn("employee_id",
-                        String.valueOf(resultSet.getLong(1)));
-                events.ifPresent(eventsCollection -> employee.setEvents((List<EventEmployee>) eventsCollection));
                 employees.add(employee);
             }
-            return Optional.of(employees);
+            return employees;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
@@ -148,10 +141,6 @@ public class EmployeeDAOJdbcImpl extends AbstractDAO<Employee> implements Employ
                 employee.setPhone(resultSet.getString(6));
                 employee.setEmail(resultSet.getString(7));
                 employee.setSalary(resultSet.getLong(8));
-                EventEmployeeDAOJdbcImpl eventEmployeeDAOJdbc = new EventEmployeeDAOJdbcImpl(connection);
-                Optional<Collection<EventEmployee>> events = eventEmployeeDAOJdbc.findManyByColumn("employee_id",
-                        String.valueOf(resultSet.getLong(1)));
-                events.ifPresent(eventsCollection -> employee.setEvents((List<EventEmployee>) eventsCollection));
                 return Optional.of(employee);
             } else {
                 return Optional.empty();

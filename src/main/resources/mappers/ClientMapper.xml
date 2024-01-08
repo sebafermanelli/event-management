@@ -6,21 +6,15 @@
 <mapper namespace="com.solvd.persistence.ClientDAO">
     <resultMap id="ClientResultMap" type="com.solvd.domain.Client" autoMapping="false">
         <id property="id" column="client_id"/>
-        <result property="cuit" column="cuit"/>
-        <result property="businessName" column="business_name"/>
-        <result property="address" column="address"/>
-        <result property="phone" column="phone"/>
-        <result property="email" column="email"/>
-        <collection property="stands" resultMap="StandResultMapClient"/>
+        <result property="cuit" column="client_cuit"/>
+        <result property="businessName" column="client_business_name"/>
+        <result property="address" column="client_address"/>
+        <result property="phone" column="client_phone"/>
+        <result property="email" column="client_email"/>
+        <collection property="stands" resultMap="com.solvd.persistence.StandDAO.StandResultMap"/>
     </resultMap>
 
-    <resultMap id="StandResultMapClient" type="com.solvd.domain.Stand" autoMapping="false">
-        <id property="id" column="stand_id"/>
-        <result property="price" column="stand_price"/>
-        <result property="roomId" column="stand_room_id"/>
-    </resultMap>
-
-    <insert id="create" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
+    <insert id="save" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
         Insert into client (cuit, business_name, address, phone, email)
         values (#{client.cuit}, #{client.businessName}, #{client.address}, #{client.phone}, #{client.email})
     </insert>
@@ -28,33 +22,33 @@
     <sql id="selectClient">
         Select
         c.id as client_id,
-        cuit,
-        business_name as "businessName",
-        address,
-        phone,
-        email,
+        c.cuit as client_cuit,
+        c.business_name as client_business_name,
+        c.address as client_address,
+        c.phone as client_phone,
+        c.email as client_email,
         s.id as stand_id,
-        price as stand_price,
-        room_id as stand_room_id
+        s.price as stand_price,
+        s.room_id as stand_room_id
         from client c
         left join stand s on c.id = s.client_id
     </sql>
 
-    <select id="findAll" resultType="com.solvd.domain.Client">
+    <select id="findAll" resultMap="ClientResultMap">
         <include refid="selectClient"/>
     </select>
 
-    <select id="findById">
+    <select id="findById" resultMap="ClientResultMap">
         <include refid="selectClient"/>
         where c.id = #{id}
     </select>
 
-    <select id="findManyByColumn">
+    <select id="findManyByColumn" resultMap="ClientResultMap">
         <include refid="selectClient"/>
         where c.${key} = #{value}
     </select>
 
-    <select id="findOneByColumn">
+    <select id="findOneByColumn" resultMap="ClientResultMap">
         <include refid="selectClient"/>
         where c.#{key} = #{value}
     </select>

@@ -10,48 +10,42 @@
         <result property="surface" column="surface"/>
         <result property="capacity" column="capacity"/>
         <result property="status" column="status"/>
-        <result property="event_id" column="eventId"/>
-        <collection property="presentations" columnPrefix="presentation_"
-                    resultMap="com.solvd.persistence.PresentationDAO.PresentationResultMap"/>
-        <collection property="stands" columnPrefix="stand_"
-                    resultMap="com.solvd.persistence.StandDAO.StandResultMap"/>
+        <collection property="presentations" resultMap="com.solvd.persistence.PresentationDAO.PresentationResultMap"/>
+        <collection property="stands" resultMap="com.solvd.persistence.StandDAO.StandResultMap"/>
     </resultMap>
 
-    <insert id="create" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
+    <insert id="save" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
         Insert into room (name, surface, capacity, status, event_id)
-        values (#{room.name}, #{room.surface}, #{room.capacity}, #{room.status}, #{room.event_id})
+        values (#{room.name}, #{room.surface}, #{room.capacity}, #{room.status}, #{eventId})
     </insert>
 
     <sql id="selectRoom">
         Select
         r.id as room_id, r.name as room_name, r.surface as room_surface, r.capacity as room_capacity, r.status as room_status, r.event_id as
         room_event_id,
-        e.id as event_id, e.name as event_name, e.theme as event_theme, e.base_ticket_price as event_base_ticket_price, e.start_date as
-        event_start_date, e.end_date as event_end_date, e.address as event_address, e.description as event_description,
         p.id as presenter_id, p.first_name as presenter_first_name, p.last_name as presenter_last_name, p.address as presenter_address, p.phone as
         presenter_phone, p.email as presenter_email, p.specialization as presenter_specialization,
         s.id as stand_id, s.price as stand_price, s.room_id as stand_room_id, s.client_id as stand_client_id
         from room r
-        left join event e on r.event_id = e.id
         left join presentation p on r.id = p.room_id
         left join stand s on r.id = s.room_id
     </sql>
 
-    <select id="findAll">
+    <select id="findAll" resultMap="RoomResultMap">
         <include refid="selectRoom"/>
     </select>
 
-    <select id="findById">
+    <select id="findById" resultMap="RoomResultMap">
         <include refid="selectRoom"/>
         where r.id = #{id}
     </select>
 
-    <select id="findManyByColumn">
+    <select id="findManyByColumn" resultMap="RoomResultMap">
         <include refid="selectRoom"/>
         where r.#{key} = #{value}
     </select>
 
-    <select id="findOneByColumn">
+    <select id="findOneByColumn" resultMap="RoomResultMap">
         <include refid="selectRoom"/>
         where r.#{key} = #{value}
     </select>
@@ -65,8 +59,7 @@
         name = #{room.name},
         surface = #{room.surface},
         capacity = #{room.capacity},
-        status = #{room.status},
-        event_id = #{room.eventId}
+        status = #{room.status}
         where id = #{id}
     </update>
 </mapper>

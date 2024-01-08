@@ -5,20 +5,20 @@
 
 <mapper namespace="com.solvd.persistence.EventDAO">
     <resultMap id="EventResultMap" type="com.solvd.domain.Event" autoMapping="false">
-        <id property="id" column="id"/>
-        <result property="name" column="name"/>
-        <result property="theme" column="theme"/>
-        <result property="baseTicketPrice" column="base_ticket_price"/>
-        <result property="startDate" column="start_date"/>
-        <result property="endDate" column="end_date"/>
-        <result property="address" column="address"/>
-        <result property="description" column="description"/>
-        <collection property="rooms" columnPrefix="room_" resultMap="com.solvd.persistence.RoomDAO.RoomResultMap"/>
-        <collection property="tickets" columnPrefix="ticket_" resultMap="com.solvd.persistence.TicketDAO.TicketResultMap"/>
-        <collection property="employees" columnPrefix="event_employee_" resultMap="com.solvd.persistence.EventEmployeeDAO.EventEmployeeResultMap"/>
+        <id property="id" column="event_id"/>
+        <result property="name" column="event_name"/>
+        <result property="theme" column="event_theme"/>
+        <result property="baseTicketPrice" column="event_base_ticket_price"/>
+        <result property="startDate" column="event_start_date"/>
+        <result property="endDate" column="event_end_date"/>
+        <result property="address" column="event_address"/>
+        <result property="description" column="event_description"/>
+        <collection property="rooms" resultMap="com.solvd.persistence.RoomDAO.RoomResultMap"/>
+        <collection property="tickets" resultMap="com.solvd.persistence.TicketDAO.TicketResultMap"/>
+        <collection property="employees" resultMap="com.solvd.persistence.EmployeeDAO.EmployeeResultMap"/>
     </resultMap>
 
-    <insert id="create" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
+    <insert id="save" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
         Insert into event (name, theme, base_ticket_price, start_date, end_date, address, description)
         values (#{event.name}, #{event.theme}, #{event.baseTicketPrice}, #{event.startDate}, #{event.endDate}, #{event.address},
         #{event.description})
@@ -26,31 +26,35 @@
 
     <sql id="selectEvent">
         Select
-        e.id as event_id, e.name as event_name, e.theme as event_theme, e.base_ticket_price as event_base_ticket_price, e.start_date as
-        event_start_date, e.end_date as event_end_date, e.address as event_address, e.description as event_description,
-        ee.id as event_employee_id, ee.role as event_employee_role, ee.employee_id as event_employee_employee_id, ee.event_id as
-        event_employee_event_id
-        from event e
-        left join event_employee ee on e.id = ee.event_id
+        e.id as employee_id, e.first_name as employee_first_name, e.last_name as employee_last_name, e.address as
+        employee_address, e.phone as employee_phone, e.email as employee_email, e.salary as employee_salary,
+        ee.id as event_employee_id, ee.role as event_employee_role, ee.employee_id as event_employee_employee_id,
+        ee.event_id as event_employee_event_id,
+        ev.id as event_id, ev.name as event_name, ev.theme as event_theme, ev.base_ticket_price as
+        event_base_ticket_price, ev.start_date as event_start_date, ev.end_date as event_end_date, ev.address as
+        event_address, ev.description as event_description
+        from employee e
+        left join event_employee ee on e.id = ee.employee_id
+        left join event ev on ev.id = ee.event_id
     </sql>
 
-    <select id="findAll">
+    <select id="findAll" resultMap="EventResultMap">
         <include refid="selectEvent"/>
     </select>
 
-    <select id="findById">
+    <select id="findById" resultMap="EventResultMap">
         <include refid="selectEvent"/>
-        where e.id = #{id}
+        where ev.id = #{id}
     </select>
 
-    <select id="findManyByColumn">
+    <select id="findManyByColumn" resultMap="EventResultMap">
         <include refid="selectEvent"/>
-        where e.#{key} = #{value}
+        where ev.#{key} = #{value}
     </select>
 
-    <select id="findOneByColumn">
+    <select id="findOneByColumn" resultMap="EventResultMap">
         <include refid="selectEvent"/>
-        where e.#{key} = #{value}
+        where ev.#{key} = #{value}
     </select>
 
     <delete id="deleteById">

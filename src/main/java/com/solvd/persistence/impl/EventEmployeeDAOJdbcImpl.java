@@ -15,6 +15,7 @@ import java.util.Optional;
 
 public class EventEmployeeDAOJdbcImpl extends AbstractDAO<EventEmployee> implements EventEmployeeDAO {
 
+
     public EventEmployeeDAOJdbcImpl(Connection connection) {
         super(connection);
     }
@@ -26,7 +27,14 @@ public class EventEmployeeDAOJdbcImpl extends AbstractDAO<EventEmployee> impleme
             stmt.setString(1, eventEmployee.getRole());
             stmt.setLong(2, eventEmployee.getEmployeeId());
             stmt.setLong(3, eventEmployee.getEventId());
-            stmt.executeUpdate();
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected == 1) {
+                ResultSet rs = stmt.getGeneratedKeys();
+                if (rs.next()) {
+                    Long id = rs.getLong(1);
+                    eventEmployee.setId(id);
+                }
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
@@ -80,7 +88,7 @@ public class EventEmployeeDAOJdbcImpl extends AbstractDAO<EventEmployee> impleme
     }
 
     @Override
-    public Optional<Collection<EventEmployee>> findManyByColumn(String key, String value) {
+    public Collection<EventEmployee> findManyByColumn(String key, String value) {
         String sql = "Select * from event_employee where " + key + " = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, value);
@@ -94,7 +102,7 @@ public class EventEmployeeDAOJdbcImpl extends AbstractDAO<EventEmployee> impleme
                 eventEmployee.setEventId(resultSet.getLong(4));
                 eventEmployees.add(eventEmployee);
             }
-            return Optional.of(eventEmployees);
+            return eventEmployees;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {

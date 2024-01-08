@@ -13,7 +13,7 @@ public class Event extends BaseEntity {
     private String description;
     private List<Room> rooms;
     private List<Ticket> tickets;
-    private List<EventEmployee> employees;
+    private List<Employee> employees;
 
     public String getName() {
         return name;
@@ -87,11 +87,11 @@ public class Event extends BaseEntity {
         this.tickets = tickets;
     }
 
-    public List<EventEmployee> getEmployees() {
+    public List<Employee> getEmployees() {
         return employees;
     }
 
-    public void setEmployees(List<EventEmployee> employees) {
+    public void setEmployees(List<Employee> employees) {
         this.employees = employees;
     }
 }

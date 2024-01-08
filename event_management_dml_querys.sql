@@ -131,7 +131,7 @@ FROM event
          LEFT JOIN
      presentation_ticket ON presentation.id = presentation_ticket.presentation_id AND ticket.id = presentation_ticket.ticket_id
          LEFT JOIN
-     person ON ticket.attendee_id = person.id;
+     visitor ON ticket.attendee_id = visitor.id;
 # 5 statements with left, right, inner, outer joins
 SELECT *
 FROM event

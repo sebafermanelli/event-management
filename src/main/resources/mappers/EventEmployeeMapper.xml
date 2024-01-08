@@ -5,46 +5,39 @@
 
 <mapper namespace="com.solvd.persistence.EventEmployeeDAO">
     <resultMap id="EventEmployeeResultMap" type="com.solvd.domain.EventEmployee" autoMapping="false">
-        <id property="id" column="id"/>
-        <result property="role" column="role"/>
-        <result property="employeeId" column="employee_id"/>
-        <result property="eventId" column="event_id"/>
+        <id property="id" column="event_employee_id"/>
+        <result property="role" column="event_employee_role"/>
+        <association property="employeeId" column="employee_id"/>
+        <association property="event" column="event_id"/>
     </resultMap>
 
-    <insert id="create" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
+    <insert id="save" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
         Insert into event_employee (role, employee_id, event_id)
         values (#{eventEmployee.role}, #{eventEmployee.employeeId}, #{eventEmployee.eventId})
     </insert>
 
     <sql id="selectEventEmployee">
         Select
-        ee.id as event_employee_id, ee.role as event_employee_role, ee.employee_id as event_employee_employee_id, ee.event_id as
-        event_employee_event_id
-        emp.id as employee_id, emp.first_name as employee_first_name, emp.last_name as employee_last_name, emp.address as employee_address,
-        emp.phone as
-        employee_phone, emp.email as employee_email, emp.salary as employee_salary,
-        ev.id as event_id, ev.name as event_name, ev.theme as event_theme, ev.base_ticket_price as event_base_ticket_price, ev.start_date as
-        event_start_date, ev.end_date as event_end_date, ev.address as event_address, ev.description as event_description
+        ee.id as event_employee_id, ee.role as event_employee_role, ee.employee_id as event_employee_employee_id,
+        ee.event_id as event_employee_event_id
         from event_employee ee
-        left join employee emp on emp.id = ee.employee_id
-        left join event ev on ev.id = ee.event_id
     </sql>
 
-    <select id="findAll">
+    <select id="findAll" resultMap="EventEmployeeResultMap">
         <include refid="selectEventEmployee"/>
     </select>
 
-    <select id="findById">
+    <select id="findById" resultMap="EventEmployeeResultMap">
         <include refid="selectEventEmployee"/>
         where ee.id = #{id}
     </select>
 
-    <select id="findManyByColumn">
+    <select id="findManyByColumn" resultMap="EventEmployeeResultMap">
         <include refid="selectEventEmployee"/>
         where ee.#{key} = #{value}
     </select>
 
-    <select id="findOneByColumn">
+    <select id="findOneByColumn" resultMap="EventEmployeeResultMap">
         <include refid="selectEventEmployee"/>
         where ee.#{key} = #{value}
     </select>
@@ -55,9 +48,9 @@
 
     <update id="updateById">
         Update event_employee set
-        role = #{event.role},
-        employee_id = #{event.employeeId},
-        event_id = #{event.eventId},
+        role = #{eventEmployee.role},
+        employee_id = #{eventEmployee.employeeId},
+        event_id = #{eventEmployee.eventId},
         where id = #{id}
     </update>
 </mapper>

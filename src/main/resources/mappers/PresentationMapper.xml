@@ -5,21 +5,19 @@
 
 <mapper namespace="com.solvd.persistence.PresentationDAO">
     <resultMap id="PresentationResultMap" type="com.solvd.domain.Presentation" autoMapping="false">
-        <id property="id" column="id"/>
-        <result property="name" column="name"/>
-        <result property="description" column="description"/>
-        <result property="startDateTime" column="start_datetime"/>
-        <result property="endDateTime" column="end_datetime"/>
-        <result property="ticketPrice" column="ticket_price"/>
-        <result property="roomId" column="room_id"/>
-        <result property="presenterId" column="presenter_id"/>
-        <collection property="tickets" columnPrefix="ticket_" resultMap="com.solvd.persistence.TicketDAO.TicketResultMap"/>
+        <id property="id" column="presentation_id"/>
+        <result property="name" column="presentation_name"/>
+        <result property="description" column="presentation_description"/>
+        <result property="startDateTime" column="presentation_start_datetime"/>
+        <result property="endDateTime" column="presentation_end_datetime"/>
+        <result property="ticketPrice" column="presentation_ticket_price"/>
+        <collection property="tickets" resultMap="com.solvd.persistence.TicketDAO.TicketResultMap"/>
     </resultMap>
 
-    <insert id="create" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
+    <insert id="save" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
         Insert into presentation (name, description, start_datetime, end_datetime, ticket_price, room_id, presenter_id)
         values (#{presentation.name}, #{presentation.description}, #{presentation.startDateTime}, #{presentation.endDateTime},
-        #{presentation.ticketPrice}, #{presentation.roomId}, #{presentation.presenterId})
+        #{presentation.ticketPrice}, #{roomId}, #{presenterId})
     </insert>
 
     <sql id="selectPresentation">
@@ -28,27 +26,28 @@
         presentation_start_datetime, p.end_datetime as presentation_end_datetime, p.ticket_price as presentation_ticket_price, p.room_id as
         presentation_room_id, p.presenter_id as presentation_presenter_id,
         pt.id as presentation_ticket_id, pt.presentation_id as presentation_ticket_presentation_id, pt.ticket_id as presentation_ticket_ticket_id,
-        t.id as ticket_id, t.cost as ticket_cost, t.event_id as ticket_event_id, t.attendee_id as ticket_attendee_id, t.buyer_id as ticket_buyer_id
+        t.id as ticket_id, t.cost as ticket_cost, t.event_id as ticket_event_id, t.attendee_id as ticket_attendee_id,
+        t.buyer_id as ticket_buyer_id
         from presentation p
         left join presentation_ticket pt on p.id = pt.presentation_id
         left join ticket t on t.id = pt.ticket_id
     </sql>
 
-    <select id="findAll">
+    <select id="findAll" resultMap="PresentationResultMap">
         <include refid="selectPresentation"/>
     </select>
 
-    <select id="findById">
+    <select id="findById" resultMap="PresentationResultMap">
         <include refid="selectPresentation"/>
         where p.id = #{id}
     </select>
 
-    <select id="findManyByColumn">
+    <select id="findManyByColumn" resultMap="PresentationResultMap">
         <include refid="selectPresentation"/>
         where p.#{key} = #{value}
     </select>
 
-    <select id="findOneByColumn">
+    <select id="findOneByColumn" resultMap="PresentationResultMap">
         <include refid="selectPresentation"/>
         where p.#{key} = #{value}
     </select>
@@ -63,9 +62,7 @@
         description = #{presentation.description},
         start_datetime = #{presentation.startDateTime},
         end_datetime = #{presentation.endDateTime},
-        ticket_price = #{presentation.ticketPrice},
-        room_id = #{presentation.roomId},
-        presenter_id = #{presentation.presenterId}
+        ticket_price = #{presentation.ticketPrice}
         where id = #{id}
     </update>
 </mapper>

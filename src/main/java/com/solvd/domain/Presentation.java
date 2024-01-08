@@ -9,8 +9,6 @@ public class Presentation extends BaseEntity {
     private Date startDateTime;
     private Date endDateTime;
     private Long ticketPrice;
-    private Long roomId;
-    private Long presenterId;
     private List<Ticket> tickets;
 
     public String getName() {
@@ -51,22 +49,6 @@ public class Presentation extends BaseEntity {
 
     public void setTicketPrice(Long ticketPrice) {
         this.ticketPrice = ticketPrice;
-    }
-
-    public Long getRoomId() {
-        return roomId;
-    }
-
-    public void setRoomId(Long roomId) {
-        this.roomId = roomId;
-    }
-
-    public Long getPresenterId() {
-        return presenterId;
-    }
-
-    public void setPresenterId(Long presenterId) {
-        this.presenterId = presenterId;
     }
 
     public List<Ticket> getTickets() {

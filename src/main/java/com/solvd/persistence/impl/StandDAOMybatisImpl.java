@@ -34,7 +34,7 @@ public class StandDAOMybatisImpl implements StandDAO {
     }
 
     @Override
-    public Optional<Collection<Stand>> findManyByColumn(String key, String value) {
+    public Collection<Stand> findManyByColumn(String key, String value) {
         try (SqlSession sqlSession = PersistenceConfigMybatis.getSessionFactory().openSession(true)) {
             StandDAO standDAO = sqlSession.getMapper(StandDAO.class);
             return standDAO.findManyByColumn(key, value);
@@ -62,6 +62,22 @@ public class StandDAOMybatisImpl implements StandDAO {
         try (SqlSession sqlSession = PersistenceConfigMybatis.getSessionFactory().openSession(true)) {
             StandDAO standDAO = sqlSession.getMapper(StandDAO.class);
             standDAO.updateById(stand, id);
+        }
+    }
+
+    @Override
+    public void save(Stand stand, Long roomId) {
+        try (SqlSession sqlSession = PersistenceConfigMybatis.getSessionFactory().openSession(true)) {
+            StandDAO standDAO = sqlSession.getMapper(StandDAO.class);
+            standDAO.save(stand, roomId);
+        }
+    }
+
+    @Override
+    public void addClient(Long standId, Long clientId) {
+        try (SqlSession sqlSession = PersistenceConfigMybatis.getSessionFactory().openSession(true)) {
+            StandDAO standDAO = sqlSession.getMapper(StandDAO.class);
+            standDAO.addClient(standId, clientId);
         }
     }
 }

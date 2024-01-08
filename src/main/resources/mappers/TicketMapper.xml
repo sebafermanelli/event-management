@@ -5,17 +5,14 @@
 
 <mapper namespace="com.solvd.persistence.TicketDAO">
     <resultMap id="TicketResultMap" type="com.solvd.domain.Ticket" autoMapping="false">
-        <id property="id" column="id"/>
-        <result property="cost" column="cost"/>
-        <result property="eventId" column="event_id"/>
-        <result property="attendeeId" column="attendee_id"/>
-        <result property="buyerId" column="buyer_id"/>
-        <collection property="presentations" columnPrefix="presentation_" resultMap="com.solvd.persistence.PresentationDAO.PresentationResultMap"/>
+        <id property="id" column="ticket_id"/>
+        <result property="cost" column="ticket_cost"/>
+        <collection property="presentations" resultMap="com.solvd.persistence.PresentationDAO.PresentationResultMap"/>
     </resultMap>
 
-    <insert id="create" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
+    <insert id="save" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
         Insert into ticket (cost, event_id, attendee_id, buyer_id)
-        values (#{ticket.cost}, #{ticket.eventId}, #{ticket.attendeeId}, #{ticket.buyerId})
+        values (#{ticket.cost}, #{eventId}, #{attendeeId}, #{buyerId})
     </insert>
 
     <sql id="selectTicket">
@@ -25,35 +22,26 @@
         p.id as presentation_id, p.name as presentation_name, p.description as presentation_description, p.start_datetime as
         presentation_start_datetime, p.end_datetime as presentation_end_datetime, p.ticket_price as presentation_ticket_price, p.room_id as
         presentation_room_id, p.presenter_id as presentation_presenter_id
-        e.id as event_id, e.name as event_name, e.theme as event_theme, e.base_ticket_price as event_base_ticket_price, e.start_date as
-        event_start_date, e.end_date as event_end_date, e.address as event_address, e.description as event_description,
-        a.id as attendee_id, a.first_name as attendee_first_name, a.last_name as attendee_last_name, a.address as attendee_address, a.phone as
-        attendee_phone, a.email as attendee_email,
-        b.id as buyer_id, b.first_name as buyer_first_name, b.last_name as buyer_last_name, b.address as buyer_address, b.phone as
-        buyer_phone, b.email as buyer_email
         from ticket t
         left join presentation_ticket pt on t.id = pt.ticket_id
         left join presentation p on p.id = pt.presentation_id
-        left join event e on e.id = t.event_id
-        left join visitor a on a.id = t.attendee_id
-        left join visitor b on b.id = t.buyer_id
     </sql>
 
-    <select id="findAll">
+    <select id="findAll" resultMap="TicketResultMap">
         <include refid="selectTicket"/>
     </select>
 
-    <select id="findById">
+    <select id="findById" resultMap="TicketResultMap">
         <include refid="selectTicket"/>
         where t.id = #{id}
     </select>
 
-    <select id="findManyByColumn">
+    <select id="findManyByColumn" resultMap="TicketResultMap">
         <include refid="selectTicket"/>
         where t.#{key} = #{value}
     </select>
 
-    <select id="findOneByColumn">
+    <select id="findOneByColumn" resultMap="TicketResultMap">
         <include refid="selectTicket"/>
         where t.#{key} = #{value}
     </select>
@@ -70,4 +58,9 @@
         buyer_id = #{ticket.buyerId}
         where id = #{id}
     </update>
+
+    <insert id="addPresentation" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
+        Insert into presentation_ticket (ticket_id, presentation_id)
+        values (#{ticketId}, #{presentationId})
+    </insert>
 </mapper>

@@ -1,8 +1,6 @@
 package com.solvd.persistence.impl;
 
 import com.solvd.domain.Presentation;
-import com.solvd.domain.PresentationTicket;
-import com.solvd.domain.Ticket;
 import com.solvd.persistence.AbstractDAO;
 import com.solvd.persistence.PersistenceConfigJdbc;
 import com.solvd.persistence.PresentationDAO;
@@ -13,7 +11,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 
 public class PresentationDAOJdbcImpl extends AbstractDAO<Presentation> implements PresentationDAO {
@@ -24,22 +21,7 @@ public class PresentationDAOJdbcImpl extends AbstractDAO<Presentation> implement
 
     @Override
     public void save(Presentation presentation) {
-        String sql = "Insert into presentation (name, description, start_datetime, end_datetime, ticket_price, room_id, presenter_id) values (?, ?," +
-                " ?, ?, ?, ?, ?)";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setString(1, presentation.getName());
-            stmt.setString(2, presentation.getDescription());
-            stmt.setDate(3, presentation.getStartDateTime());
-            stmt.setDate(4, presentation.getEndDateTime());
-            stmt.setLong(5, presentation.getTicketPrice());
-            stmt.setLong(6, presentation.getRoomId());
-            stmt.setLong(7, presentation.getPresenterId());
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } finally {
-            PersistenceConfigJdbc.releaseConnection(connection);
-        }
+//        Nothing here
     }
 
     @Override
@@ -56,21 +38,6 @@ public class PresentationDAOJdbcImpl extends AbstractDAO<Presentation> implement
                 presentation.setStartDateTime(resultSet.getDate(4));
                 presentation.setEndDateTime(resultSet.getDate(5));
                 presentation.setTicketPrice(resultSet.getLong(6));
-                presentation.setRoomId(resultSet.getLong(7));
-                presentation.setPresenterId(resultSet.getLong(8));
-                PresentationTicketDAOJdbcImpl presentationTicketDAOJdbc = new PresentationTicketDAOJdbcImpl(connection);
-                TicketDAOJdbcImpl ticketDAOJdbc = new TicketDAOJdbcImpl(connection);
-                Optional<Collection<PresentationTicket>> presentationTickets = presentationTicketDAOJdbc.findManyByColumn("presentation_id",
-                        String.valueOf(resultSet.getLong(1)));
-                presentationTickets
-                        .ifPresent(presentationTicketsCollection -> {
-                            List<Ticket> tickets = new ArrayList<>();
-                            presentationTicketsCollection.forEach(presentationTicket -> {
-                                Optional<Ticket> ticket = ticketDAOJdbc.findById(presentationTicket.getTicketId());
-                                ticket.ifPresent(tickets::add);
-                            });
-                            presentation.setTickets(tickets);
-                        });
                 presentations.add(presentation);
             }
             return presentations;
@@ -95,21 +62,6 @@ public class PresentationDAOJdbcImpl extends AbstractDAO<Presentation> implement
                 presentation.setStartDateTime(resultSet.getDate(4));
                 presentation.setEndDateTime(resultSet.getDate(5));
                 presentation.setTicketPrice(resultSet.getLong(6));
-                presentation.setRoomId(resultSet.getLong(7));
-                presentation.setPresenterId(resultSet.getLong(8));
-                PresentationTicketDAOJdbcImpl presentationTicketDAOJdbc = new PresentationTicketDAOJdbcImpl(connection);
-                TicketDAOJdbcImpl ticketDAOJdbc = new TicketDAOJdbcImpl(connection);
-                Optional<Collection<PresentationTicket>> presentationTickets = presentationTicketDAOJdbc.findManyByColumn("presentation_id",
-                        String.valueOf(resultSet.getLong(1)));
-                presentationTickets
-                        .ifPresent(presentationTicketsCollection -> {
-                            List<Ticket> tickets = new ArrayList<>();
-                            presentationTicketsCollection.forEach(presentationTicket -> {
-                                Optional<Ticket> ticket = ticketDAOJdbc.findById(presentationTicket.getTicketId());
-                                ticket.ifPresent(tickets::add);
-                            });
-                            presentation.setTickets(tickets);
-                        });
                 return Optional.of(presentation);
             } else {
                 return Optional.empty();
@@ -122,7 +74,7 @@ public class PresentationDAOJdbcImpl extends AbstractDAO<Presentation> implement
     }
 
     @Override
-    public Optional<Collection<Presentation>> findManyByColumn(String key, String value) {
+    public Collection<Presentation> findManyByColumn(String key, String value) {
         String sql = "Select * from presentation where " + key + " = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, value);
@@ -136,24 +88,9 @@ public class PresentationDAOJdbcImpl extends AbstractDAO<Presentation> implement
                 presentation.setStartDateTime(resultSet.getDate(4));
                 presentation.setEndDateTime(resultSet.getDate(5));
                 presentation.setTicketPrice(resultSet.getLong(6));
-                presentation.setRoomId(resultSet.getLong(7));
-                presentation.setPresenterId(resultSet.getLong(8));
-                PresentationTicketDAOJdbcImpl presentationTicketDAOJdbc = new PresentationTicketDAOJdbcImpl(connection);
-                TicketDAOJdbcImpl ticketDAOJdbc = new TicketDAOJdbcImpl(connection);
-                Optional<Collection<PresentationTicket>> presentationTickets = presentationTicketDAOJdbc.findManyByColumn("presentation_id",
-                        String.valueOf(resultSet.getLong(1)));
-                presentationTickets
-                        .ifPresent(presentationTicketsCollection -> {
-                            List<Ticket> tickets = new ArrayList<>();
-                            presentationTicketsCollection.forEach(presentationTicket -> {
-                                Optional<Ticket> ticket = ticketDAOJdbc.findById(presentationTicket.getTicketId());
-                                ticket.ifPresent(tickets::add);
-                            });
-                            presentation.setTickets(tickets);
-                        });
                 presentations.add(presentation);
             }
-            return Optional.of(presentations);
+            return presentations;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
@@ -175,21 +112,6 @@ public class PresentationDAOJdbcImpl extends AbstractDAO<Presentation> implement
                 presentation.setStartDateTime(resultSet.getDate(4));
                 presentation.setEndDateTime(resultSet.getDate(5));
                 presentation.setTicketPrice(resultSet.getLong(6));
-                presentation.setRoomId(resultSet.getLong(7));
-                presentation.setPresenterId(resultSet.getLong(8));
-                PresentationTicketDAOJdbcImpl presentationTicketDAOJdbc = new PresentationTicketDAOJdbcImpl(connection);
-                TicketDAOJdbcImpl ticketDAOJdbc = new TicketDAOJdbcImpl(connection);
-                Optional<Collection<PresentationTicket>> presentationTickets = presentationTicketDAOJdbc.findManyByColumn("presentation_id",
-                        String.valueOf(resultSet.getLong(1)));
-                presentationTickets
-                        .ifPresent(presentationTicketsCollection -> {
-                            List<Ticket> tickets = new ArrayList<>();
-                            presentationTicketsCollection.forEach(presentationTicket -> {
-                                Optional<Ticket> ticket = ticketDAOJdbc.findById(presentationTicket.getTicketId());
-                                ticket.ifPresent(tickets::add);
-                            });
-                            presentation.setTickets(tickets);
-                        });
                 return Optional.of(presentation);
             } else {
                 return Optional.empty();
@@ -216,18 +138,42 @@ public class PresentationDAOJdbcImpl extends AbstractDAO<Presentation> implement
 
     @Override
     public void updateById(Presentation presentation, Long id) {
-        String sql = "Update presentation set name = ?, description = ?, start_datetime = ?, end_datetime = ?, ticket_price = ?, room_id = ?, " +
-                "presenter_id = ? where id = ?";
+        String sql = "Update presentation set name = ?, description = ?, start_datetime = ?, end_datetime = ?, ticket_price = ? where id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, presentation.getName());
             stmt.setString(2, presentation.getDescription());
             stmt.setDate(3, presentation.getStartDateTime());
             stmt.setDate(4, presentation.getEndDateTime());
             stmt.setLong(5, presentation.getTicketPrice());
-            stmt.setLong(6, presentation.getRoomId());
-            stmt.setLong(7, presentation.getPresenterId());
-            stmt.setLong(8, id);
+            stmt.setLong(6, id);
             stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            PersistenceConfigJdbc.releaseConnection(connection);
+        }
+    }
+
+    @Override
+    public void save(Presentation presentation, Long roomId, Long presenterId) {
+        String sql = "Insert into presentation (name, description, start_datetime, end_datetime, ticket_price, room_id, presenter_id) values (?, ?," +
+                " ?, ?, ?, ?, ?)";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, presentation.getName());
+            stmt.setString(2, presentation.getDescription());
+            stmt.setDate(3, presentation.getStartDateTime());
+            stmt.setDate(4, presentation.getEndDateTime());
+            stmt.setLong(5, presentation.getTicketPrice());
+            stmt.setLong(6, roomId);
+            stmt.setLong(7, presenterId);
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected == 1) {
+                ResultSet rs = stmt.getGeneratedKeys();
+                if (rs.next()) {
+                    Long id = rs.getLong(1);
+                    presentation.setId(id);
+                }
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {

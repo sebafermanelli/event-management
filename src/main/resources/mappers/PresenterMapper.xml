@@ -5,19 +5,18 @@
 
 <mapper namespace="com.solvd.persistence.PresenterDAO">
     <resultMap id="PresenterResultMap" type="com.solvd.domain.Presenter" autoMapping="false">
-        <id property="id" column="id"/>
-        <result property="cuil" column="cuil"/>
-        <result property="firstName" column="first_name"/>
-        <result property="lastName" column="last_name"/>
-        <result property="address" column="address"/>
-        <result property="phone" column="phone"/>
-        <result property="email" column="email"/>
-        <result property="specialization" column="specialization"/>
-        <collection property="presentations" columnPrefix="presentation_"
-                    resultMap="com.solvd.persistence.PresentationDAO.PresentationResultMap"/>
+        <id property="id" column="presenter_id"/>
+        <result property="cuil" column="presenter_cuil"/>
+        <result property="firstName" column="presenter_first_name"/>
+        <result property="lastName" column="presenter_last_name"/>
+        <result property="address" column="presenter_address"/>
+        <result property="phone" column="presenter_phone"/>
+        <result property="email" column="presenter_email"/>
+        <result property="specialization" column="presenter_specialization"/>
+        <collection property="presentations" resultMap="com.solvd.persistence.PresentationDAO.PresentationResultMap"/>
     </resultMap>
 
-    <insert id="create" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
+    <insert id="save" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
         Insert into presenter (cuil, first_name, last_name, address, phone, email, specialization)
         values (#{presenter.cuil}, #{presenter.firstName}, #{presenter.lastName}, #{presenter.address}, #{presenter.phone}, #{presenter.email},
         #{presenter.specialization})
@@ -34,21 +33,21 @@
         left join presentation pr on p.id = pr.presenter_id
     </sql>
 
-    <select id="findAll">
+    <select id="findAll" resultMap="PresenterResultMap">
         <include refid="selectPresenter"/>
     </select>
 
-    <select id="findById">
+    <select id="findById" resultMap="PresenterResultMap">
         <include refid="selectPresenter"/>
         where p.id = #{id}
     </select>
 
-    <select id="findManyByColumn">
+    <select id="findManyByColumn" resultMap="PresenterResultMap">
         <include refid="selectPresenter"/>
         where p.#{key} = #{value}
     </select>
 
-    <select id="findOneByColumn">
+    <select id="findOneByColumn" resultMap="PresenterResultMap">
         <include refid="selectPresenter"/>
         where p.#{key} = #{value}
     </select>

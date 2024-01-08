@@ -6,40 +6,36 @@
 <mapper namespace="com.solvd.persistence.StandDAO">
     <resultMap id="StandResultMap" type="com.solvd.domain.Stand" autoMapping="false">
         <id property="id" column="stand_id"/>
-        <result property="price" column="price"/>
-        <result property="roomId" column="room_id"/>
-        <result property="clientId" column="client_id"/>
+        <result property="price" column="stand_price"/>
     </resultMap>
 
-    <insert id="create" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
-        Insert into stand (price, room_id, client_id)
-        values (#{stand.price}, #{stand.roomId}, #{stand.clientId})
+    <insert id="save" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
+        Insert into stand (price, room_id)
+        values (#{stand.price}, #{roomId})
     </insert>
 
     <sql id="selectStand">
         Select
-        s.id,
-        s.price,
-        s.room_id,
-        s.client_id
+        s.id as stand_id,
+        s.price as stand_price
         from stand s
     </sql>
 
-    <select id="findAll">
+    <select id="findAll" resultMap="StandResultMap">
         <include refid="selectStand"/>
     </select>
 
-    <select id="findById">
+    <select id="findById" resultMap="StandResultMap">
         <include refid="selectStand"/>
         where s.id = #{id}
     </select>
 
-    <select id="findManyByColumn">
+    <select id="findManyByColumn" resultMap="StandResultMap">
         <include refid="selectStand"/>
         where s.${key} = #{value}
     </select>
 
-    <select id="findOneByColumn">
+    <select id="findOneByColumn" resultMap="StandResultMap">
         <include refid="selectStand"/>
         where s.#{key} = #{value}
     </select>
@@ -54,5 +50,11 @@
         room_id = #{stand.roomId},
         client_id = #{stand.clientId}
         where id = #{id}
+    </update>
+
+    <update id="addClient">
+        Update stand set
+        client_id = #{clientId}
+        where id = #{standId}
     </update>
 </mapper>

@@ -1,9 +1,6 @@
 package com.solvd.persistence.impl;
 
 import com.solvd.domain.Event;
-import com.solvd.domain.EventEmployee;
-import com.solvd.domain.Room;
-import com.solvd.domain.Ticket;
 import com.solvd.persistence.AbstractDAO;
 import com.solvd.persistence.EventDAO;
 import com.solvd.persistence.PersistenceConfigJdbc;
@@ -14,7 +11,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 
 public class EventDAOJdbcImpl extends AbstractDAO<Event> implements EventDAO {
@@ -34,7 +30,14 @@ public class EventDAOJdbcImpl extends AbstractDAO<Event> implements EventDAO {
             stmt.setDate(5, event.getEndDate());
             stmt.setString(6, event.getAddress());
             stmt.setString(7, event.getDescription());
-            stmt.executeUpdate();
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected == 1) {
+                ResultSet rs = stmt.getGeneratedKeys();
+                if (rs.next()) {
+                    Long id = rs.getLong(1);
+                    event.setId(id);
+                }
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
@@ -58,16 +61,6 @@ public class EventDAOJdbcImpl extends AbstractDAO<Event> implements EventDAO {
                 event.setEndDate(resultSet.getDate(6));
                 event.setAddress(resultSet.getString(7));
                 event.setDescription(resultSet.getString(8));
-                RoomDAOJdbcImpl roomDAOJdbc = new RoomDAOJdbcImpl(connection);
-                Optional<Collection<Room>> rooms = roomDAOJdbc.findManyByColumn("event_id", String.valueOf(resultSet.getLong(1)));
-                rooms.ifPresent(roomsCollection -> event.setRooms((List<Room>) roomsCollection));
-                TicketDAOJdbcImpl ticketDAOJdbc = new TicketDAOJdbcImpl(connection);
-                Optional<Collection<Ticket>> tickets = ticketDAOJdbc.findManyByColumn("event_id", String.valueOf(resultSet.getLong(1)));
-                tickets.ifPresent(ticketsCollection -> event.setTickets((List<Ticket>) ticketsCollection));
-                EventEmployeeDAOJdbcImpl eventEmployeeDAOJdbc = new EventEmployeeDAOJdbcImpl(connection);
-                Optional<Collection<EventEmployee>> employees = eventEmployeeDAOJdbc.findManyByColumn("event_id",
-                        String.valueOf(resultSet.getLong(1)));
-                employees.ifPresent(employeesCollection -> event.setEmployees((List<EventEmployee>) employeesCollection));
                 events.add(event);
             }
             return events;
@@ -94,16 +87,6 @@ public class EventDAOJdbcImpl extends AbstractDAO<Event> implements EventDAO {
                 event.setEndDate(resultSet.getDate(6));
                 event.setAddress(resultSet.getString(7));
                 event.setDescription(resultSet.getString(8));
-                RoomDAOJdbcImpl roomDAOJdbc = new RoomDAOJdbcImpl(connection);
-                Optional<Collection<Room>> rooms = roomDAOJdbc.findManyByColumn("event_id", String.valueOf(resultSet.getLong(1)));
-                rooms.ifPresent(roomsCollection -> event.setRooms((List<Room>) roomsCollection));
-                TicketDAOJdbcImpl ticketDAOJdbc = new TicketDAOJdbcImpl(connection);
-                Optional<Collection<Ticket>> tickets = ticketDAOJdbc.findManyByColumn("event_id", String.valueOf(resultSet.getLong(1)));
-                tickets.ifPresent(ticketsCollection -> event.setTickets((List<Ticket>) ticketsCollection));
-                EventEmployeeDAOJdbcImpl eventEmployeeDAOJdbc = new EventEmployeeDAOJdbcImpl(connection);
-                Optional<Collection<EventEmployee>> employees = eventEmployeeDAOJdbc.findManyByColumn("event_id",
-                        String.valueOf(resultSet.getLong(1)));
-                employees.ifPresent(employeesCollection -> event.setEmployees((List<EventEmployee>) employeesCollection));
                 return Optional.of(event);
             } else {
                 return Optional.empty();
@@ -116,7 +99,7 @@ public class EventDAOJdbcImpl extends AbstractDAO<Event> implements EventDAO {
     }
 
     @Override
-    public Optional<Collection<Event>> findManyByColumn(String key, String value) {
+    public Collection<Event> findManyByColumn(String key, String value) {
         String sql = "Select * from event where " + key + " = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, value);
@@ -132,19 +115,9 @@ public class EventDAOJdbcImpl extends AbstractDAO<Event> implements EventDAO {
                 event.setEndDate(resultSet.getDate(6));
                 event.setAddress(resultSet.getString(7));
                 event.setDescription(resultSet.getString(8));
-                RoomDAOJdbcImpl roomDAOJdbc = new RoomDAOJdbcImpl(connection);
-                Optional<Collection<Room>> rooms = roomDAOJdbc.findManyByColumn("event_id", String.valueOf(resultSet.getLong(1)));
-                rooms.ifPresent(roomsCollection -> event.setRooms((List<Room>) roomsCollection));
-                TicketDAOJdbcImpl ticketDAOJdbc = new TicketDAOJdbcImpl(connection);
-                Optional<Collection<Ticket>> tickets = ticketDAOJdbc.findManyByColumn("event_id", String.valueOf(resultSet.getLong(1)));
-                tickets.ifPresent(ticketsCollection -> event.setTickets((List<Ticket>) ticketsCollection));
-                EventEmployeeDAOJdbcImpl eventEmployeeDAOJdbc = new EventEmployeeDAOJdbcImpl(connection);
-                Optional<Collection<EventEmployee>> employees = eventEmployeeDAOJdbc.findManyByColumn("event_id",
-                        String.valueOf(resultSet.getLong(1)));
-                employees.ifPresent(employeesCollection -> event.setEmployees((List<EventEmployee>) employeesCollection));
                 events.add(event);
             }
-            return Optional.of(events);
+            return events;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
@@ -168,16 +141,6 @@ public class EventDAOJdbcImpl extends AbstractDAO<Event> implements EventDAO {
                 event.setEndDate(resultSet.getDate(6));
                 event.setAddress(resultSet.getString(7));
                 event.setDescription(resultSet.getString(8));
-                RoomDAOJdbcImpl roomDAOJdbc = new RoomDAOJdbcImpl(connection);
-                Optional<Collection<Room>> rooms = roomDAOJdbc.findManyByColumn("event_id", String.valueOf(resultSet.getLong(1)));
-                rooms.ifPresent(roomsCollection -> event.setRooms((List<Room>) roomsCollection));
-                TicketDAOJdbcImpl ticketDAOJdbc = new TicketDAOJdbcImpl(connection);
-                Optional<Collection<Ticket>> tickets = ticketDAOJdbc.findManyByColumn("event_id", String.valueOf(resultSet.getLong(1)));
-                tickets.ifPresent(ticketsCollection -> event.setTickets((List<Ticket>) ticketsCollection));
-                EventEmployeeDAOJdbcImpl eventEmployeeDAOJdbc = new EventEmployeeDAOJdbcImpl(connection);
-                Optional<Collection<EventEmployee>> employees = eventEmployeeDAOJdbc.findManyByColumn("event_id",
-                        String.valueOf(resultSet.getLong(1)));
-                employees.ifPresent(employeesCollection -> event.setEmployees((List<EventEmployee>) employeesCollection));
                 return Optional.of(event);
             } else {
                 return Optional.empty();

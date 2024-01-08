@@ -35,7 +35,7 @@ public class ClientDAOMybatisImpl implements ClientDAO {
     }
 
     @Override
-    public Optional<Collection<Client>> findManyByColumn(String key, String value) {
+    public Collection<Client> findManyByColumn(String key, String value) {
         try (SqlSession sqlSession = PersistenceConfigMybatis.getSessionFactory().openSession(true)) {
             ClientDAO clientDAO = sqlSession.getMapper(ClientDAO.class);
             return clientDAO.findManyByColumn(key, value);

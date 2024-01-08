@@ -1,6 +1,5 @@
 package com.solvd.persistence.impl;
 
-import com.solvd.domain.Ticket;
 import com.solvd.domain.Visitor;
 import com.solvd.persistence.AbstractDAO;
 import com.solvd.persistence.PersistenceConfigJdbc;
@@ -12,7 +11,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 
 public class VisitorDAOJdbcImpl extends AbstractDAO<Visitor> implements VisitorDAO {
@@ -54,11 +52,6 @@ public class VisitorDAOJdbcImpl extends AbstractDAO<Visitor> implements VisitorD
                 visitor.setAddress(resultSet.getString(5));
                 visitor.setPhone(resultSet.getString(6));
                 visitor.setEmail(resultSet.getString(7));
-                TicketDAOJdbcImpl ticketDAOJdbc = new TicketDAOJdbcImpl(connection);
-                Optional<Collection<Ticket>> attendeeTickets = ticketDAOJdbc.findManyByColumn("attendee_id", String.valueOf(visitor.getId()));
-                attendeeTickets.ifPresent(attendeeTicketsCollection -> visitor.setAttendeeTickets((List<Ticket>) attendeeTicketsCollection));
-                Optional<Collection<Ticket>> buyerTickets = ticketDAOJdbc.findManyByColumn("buyer_id", String.valueOf(visitor.getId()));
-                buyerTickets.ifPresent(buyerTicketsCollection -> visitor.setBuyerTickets((List<Ticket>) buyerTicketsCollection));
                 visitors.add(visitor);
             }
             return visitors;
@@ -84,11 +77,6 @@ public class VisitorDAOJdbcImpl extends AbstractDAO<Visitor> implements VisitorD
                 visitor.setAddress(resultSet.getString(5));
                 visitor.setPhone(resultSet.getString(6));
                 visitor.setEmail(resultSet.getString(7));
-                TicketDAOJdbcImpl ticketDAOJdbc = new TicketDAOJdbcImpl(connection);
-                Optional<Collection<Ticket>> attendeeTickets = ticketDAOJdbc.findManyByColumn("attendee_id", String.valueOf(visitor.getId()));
-                attendeeTickets.ifPresent(attendeeTicketsCollection -> visitor.setAttendeeTickets((List<Ticket>) attendeeTicketsCollection));
-                Optional<Collection<Ticket>> buyerTickets = ticketDAOJdbc.findManyByColumn("buyer_id", String.valueOf(visitor.getId()));
-                buyerTickets.ifPresent(buyerTicketsCollection -> visitor.setBuyerTickets((List<Ticket>) buyerTicketsCollection));
                 return Optional.of(visitor);
             } else {
                 return Optional.empty();
@@ -101,7 +89,7 @@ public class VisitorDAOJdbcImpl extends AbstractDAO<Visitor> implements VisitorD
     }
 
     @Override
-    public Optional<Collection<Visitor>> findManyByColumn(String key, String value) {
+    public Collection<Visitor> findManyByColumn(String key, String value) {
         String sql = "Select * from visitor where " + key + " = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, value);
@@ -116,14 +104,9 @@ public class VisitorDAOJdbcImpl extends AbstractDAO<Visitor> implements VisitorD
                 visitor.setAddress(resultSet.getString(5));
                 visitor.setPhone(resultSet.getString(6));
                 visitor.setEmail(resultSet.getString(7));
-                TicketDAOJdbcImpl ticketDAOJdbc = new TicketDAOJdbcImpl(connection);
-                Optional<Collection<Ticket>> attendeeTickets = ticketDAOJdbc.findManyByColumn("attendee_id", String.valueOf(visitor.getId()));
-                attendeeTickets.ifPresent(attendeeTicketsCollection -> visitor.setAttendeeTickets((List<Ticket>) attendeeTicketsCollection));
-                Optional<Collection<Ticket>> buyerTickets = ticketDAOJdbc.findManyByColumn("buyer_id", String.valueOf(visitor.getId()));
-                buyerTickets.ifPresent(buyerTicketsCollection -> visitor.setBuyerTickets((List<Ticket>) buyerTicketsCollection));
                 visitors.add(visitor);
             }
-            return Optional.of(visitors);
+            return visitors;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
@@ -146,11 +129,6 @@ public class VisitorDAOJdbcImpl extends AbstractDAO<Visitor> implements VisitorD
                 visitor.setAddress(resultSet.getString(5));
                 visitor.setPhone(resultSet.getString(6));
                 visitor.setEmail(resultSet.getString(7));
-                TicketDAOJdbcImpl ticketDAOJdbc = new TicketDAOJdbcImpl(connection);
-                Optional<Collection<Ticket>> attendeeTickets = ticketDAOJdbc.findManyByColumn("attendee_id", String.valueOf(visitor.getId()));
-                attendeeTickets.ifPresent(attendeeTicketsCollection -> visitor.setAttendeeTickets((List<Ticket>) attendeeTicketsCollection));
-                Optional<Collection<Ticket>> buyerTickets = ticketDAOJdbc.findManyByColumn("buyer_id", String.valueOf(visitor.getId()));
-                buyerTickets.ifPresent(buyerTicketsCollection -> visitor.setBuyerTickets((List<Ticket>) buyerTicketsCollection));
                 return Optional.of(visitor);
             } else {
                 return Optional.empty();

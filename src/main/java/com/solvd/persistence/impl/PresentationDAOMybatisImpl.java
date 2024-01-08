@@ -1,8 +1,8 @@
 package com.solvd.persistence.impl;
 
 import com.solvd.domain.Presentation;
-import com.solvd.persistence.PresentationDAO;
 import com.solvd.persistence.PersistenceConfigMybatis;
+import com.solvd.persistence.PresentationDAO;
 import org.apache.ibatis.session.SqlSession;
 
 import java.util.Collection;
@@ -34,7 +34,7 @@ public class PresentationDAOMybatisImpl implements PresentationDAO {
     }
 
     @Override
-    public Optional<Collection<Presentation>> findManyByColumn(String key, String value) {
+    public Collection<Presentation> findManyByColumn(String key, String value) {
         try (SqlSession sqlSession = PersistenceConfigMybatis.getSessionFactory().openSession(true)) {
             PresentationDAO presentationDAO = sqlSession.getMapper(PresentationDAO.class);
             return presentationDAO.findManyByColumn(key, value);
@@ -62,6 +62,14 @@ public class PresentationDAOMybatisImpl implements PresentationDAO {
         try (SqlSession sqlSession = PersistenceConfigMybatis.getSessionFactory().openSession(true)) {
             PresentationDAO presentationDAO = sqlSession.getMapper(PresentationDAO.class);
             presentationDAO.updateById(presentation, id);
+        }
+    }
+
+    @Override
+    public void save(Presentation presentation, Long roomId, Long presenterId) {
+        try (SqlSession sqlSession = PersistenceConfigMybatis.getSessionFactory().openSession(true)) {
+            PresentationDAO presentationDAO = sqlSession.getMapper(PresentationDAO.class);
+            presentationDAO.save(presentation, roomId, presenterId);
         }
     }
 }

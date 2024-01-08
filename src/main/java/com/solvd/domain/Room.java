@@ -7,7 +7,6 @@ public class Room extends BaseEntity {
     private Long surface;
     private Long capacity;
     private String status;
-    private Long eventId;
     private List<Presentation> presentations;
     private List<Stand> stands;
 
@@ -41,14 +40,6 @@ public class Room extends BaseEntity {
 
     public void setStatus(String status) {
         this.status = status;
-    }
-
-    public Long getEventId() {
-        return eventId;
-    }
-
-    public void setEventId(Long eventId) {
-        this.eventId = eventId;
     }
 
     public List<Presentation> getPresentations() {

@@ -34,7 +34,7 @@ public class TicketDAOMybatisImpl implements TicketDAO {
     }
 
     @Override
-    public Optional<Collection<Ticket>> findManyByColumn(String key, String value) {
+    public Collection<Ticket> findManyByColumn(String key, String value) {
         try (SqlSession sqlSession = PersistenceConfigMybatis.getSessionFactory().openSession(true)) {
             TicketDAO ticketDAO = sqlSession.getMapper(TicketDAO.class);
             return ticketDAO.findManyByColumn(key, value);
@@ -62,6 +62,22 @@ public class TicketDAOMybatisImpl implements TicketDAO {
         try (SqlSession sqlSession = PersistenceConfigMybatis.getSessionFactory().openSession(true)) {
             TicketDAO ticketDAO = sqlSession.getMapper(TicketDAO.class);
             ticketDAO.updateById(ticket, id);
+        }
+    }
+
+    @Override
+    public void save(Ticket ticket, Long eventId, Long attendeeId, Long buyerId) {
+        try (SqlSession sqlSession = PersistenceConfigMybatis.getSessionFactory().openSession(true)) {
+            TicketDAO ticketDAO = sqlSession.getMapper(TicketDAO.class);
+            ticketDAO.save(ticket, eventId, attendeeId, buyerId);
+        }
+    }
+
+    @Override
+    public void addPresentation(Long ticketId, Long presentationId) {
+        try (SqlSession sqlSession = PersistenceConfigMybatis.getSessionFactory().openSession(true)) {
+            TicketDAO ticketDAO = sqlSession.getMapper(TicketDAO.class);
+            ticketDAO.addPresentation(ticketId, presentationId);
         }
     }
 }

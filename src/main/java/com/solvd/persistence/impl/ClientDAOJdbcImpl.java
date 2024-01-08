@@ -1,7 +1,6 @@
 package com.solvd.persistence.impl;
 
 import com.solvd.domain.Client;
-import com.solvd.domain.Stand;
 import com.solvd.persistence.AbstractDAO;
 import com.solvd.persistence.ClientDAO;
 import com.solvd.persistence.PersistenceConfigJdbc;
@@ -12,7 +11,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 
 public class ClientDAOJdbcImpl extends AbstractDAO<Client> implements ClientDAO {
@@ -30,7 +28,14 @@ public class ClientDAOJdbcImpl extends AbstractDAO<Client> implements ClientDAO 
             stmt.setString(3, client.getAddress());
             stmt.setString(4, client.getPhone());
             stmt.setString(5, client.getEmail());
-            stmt.executeUpdate();
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected == 1) {
+                ResultSet rs = stmt.getGeneratedKeys();
+                if (rs.next()) {
+                    Long id = rs.getLong(1);
+                    client.setId(id);
+                }
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
@@ -52,9 +57,6 @@ public class ClientDAOJdbcImpl extends AbstractDAO<Client> implements ClientDAO 
                 client.setAddress(resultSet.getString(4));
                 client.setPhone(resultSet.getString(5));
                 client.setEmail(resultSet.getString(6));
-                StandDAOJdbcImpl standDAOJdbc = new StandDAOJdbcImpl(connection);
-                Optional<Collection<Stand>> stands = standDAOJdbc.findManyByColumn("client_id", String.valueOf(resultSet.getLong(1)));
-                stands.ifPresent(standsCollection -> client.setStands((List<Stand>) standsCollection));
                 clients.add(client);
             }
             return clients;
@@ -79,9 +81,6 @@ public class ClientDAOJdbcImpl extends AbstractDAO<Client> implements ClientDAO 
                 client.setAddress(resultSet.getString(4));
                 client.setPhone(resultSet.getString(5));
                 client.setEmail(resultSet.getString(6));
-                StandDAOJdbcImpl standDAOJdbc = new StandDAOJdbcImpl(connection);
-                Optional<Collection<Stand>> stands = standDAOJdbc.findManyByColumn("client_id", String.valueOf(resultSet.getLong(1)));
-                stands.ifPresent(standsCollection -> client.setStands((List<Stand>) standsCollection));
                 return Optional.of(client);
             } else {
                 return Optional.empty();
@@ -94,7 +93,7 @@ public class ClientDAOJdbcImpl extends AbstractDAO<Client> implements ClientDAO 
     }
 
     @Override
-    public Optional<Collection<Client>> findManyByColumn(String key, String value) {
+    public Collection<Client> findManyByColumn(String key, String value) {
         String sql = "Select * from client where " + key + " = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, value);
@@ -108,12 +107,9 @@ public class ClientDAOJdbcImpl extends AbstractDAO<Client> implements ClientDAO 
                 client.setAddress(resultSet.getString(4));
                 client.setPhone(resultSet.getString(5));
                 client.setEmail(resultSet.getString(6));
-                StandDAOJdbcImpl standDAOJdbc = new StandDAOJdbcImpl(connection);
-                Optional<Collection<Stand>> stands = standDAOJdbc.findManyByColumn("client_id", String.valueOf(resultSet.getLong(1)));
-                stands.ifPresent(standsCollection -> client.setStands((List<Stand>) standsCollection));
                 clients.add(client);
             }
-            return Optional.of(clients);
+            return clients;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
@@ -135,9 +131,6 @@ public class ClientDAOJdbcImpl extends AbstractDAO<Client> implements ClientDAO 
                 client.setAddress(resultSet.getString(4));
                 client.setPhone(resultSet.getString(5));
                 client.setEmail(resultSet.getString(6));
-                StandDAOJdbcImpl standDAOJdbc = new StandDAOJdbcImpl(connection);
-                Optional<Collection<Stand>> stands = standDAOJdbc.findManyByColumn("client_id", String.valueOf(resultSet.getLong(1)));
-                stands.ifPresent(standsCollection -> client.setStands((List<Stand>) standsCollection));
                 return Optional.of(client);
             } else {
                 return Optional.empty();

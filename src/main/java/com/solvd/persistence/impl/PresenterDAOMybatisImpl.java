@@ -34,7 +34,7 @@ public class PresenterDAOMybatisImpl implements PresenterDAO {
     }
 
     @Override
-    public Optional<Collection<Presenter>> findManyByColumn(String key, String value) {
+    public Collection<Presenter> findManyByColumn(String key, String value) {
         try (SqlSession sqlSession = PersistenceConfigMybatis.getSessionFactory().openSession(true)) {
             PresenterDAO presenterDAO = sqlSession.getMapper(PresenterDAO.class);
             return presenterDAO.findManyByColumn(key, value);

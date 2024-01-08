@@ -34,7 +34,7 @@ public class EventDAOMybatisImpl implements EventDAO {
     }
 
     @Override
-    public Optional<Collection<Event>> findManyByColumn(String key, String value) {
+    public Collection<Event> findManyByColumn(String key, String value) {
         try (SqlSession sqlSession = PersistenceConfigMybatis.getSessionFactory().openSession(true)) {
             EventDAO eventDAO = sqlSession.getMapper(EventDAO.class);
             return eventDAO.findManyByColumn(key, value);

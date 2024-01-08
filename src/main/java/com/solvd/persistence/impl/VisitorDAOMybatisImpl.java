@@ -34,7 +34,7 @@ public class VisitorDAOMybatisImpl implements VisitorDAO {
     }
 
     @Override
-    public Optional<Collection<Visitor>> findManyByColumn(String key, String value) {
+    public Collection<Visitor> findManyByColumn(String key, String value) {
         try (SqlSession sqlSession = PersistenceConfigMybatis.getSessionFactory().openSession(true)) {
             VisitorDAO visitorDAO = sqlSession.getMapper(VisitorDAO.class);
             return visitorDAO.findManyByColumn(key, value);

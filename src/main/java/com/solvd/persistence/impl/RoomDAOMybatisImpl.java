@@ -34,7 +34,7 @@ public class RoomDAOMybatisImpl implements RoomDAO {
     }
 
     @Override
-    public Optional<Collection<Room>> findManyByColumn(String key, String value) {
+    public Collection<Room> findManyByColumn(String key, String value) {
         try (SqlSession sqlSession = PersistenceConfigMybatis.getSessionFactory().openSession(true)) {
             RoomDAO roomDAO = sqlSession.getMapper(RoomDAO.class);
             return roomDAO.findManyByColumn(key, value);
@@ -62,6 +62,14 @@ public class RoomDAOMybatisImpl implements RoomDAO {
         try (SqlSession sqlSession = PersistenceConfigMybatis.getSessionFactory().openSession(true)) {
             RoomDAO roomDAO = sqlSession.getMapper(RoomDAO.class);
             roomDAO.updateById(room, id);
+        }
+    }
+
+    @Override
+    public void save(Room room, Long eventId) {
+        try (SqlSession sqlSession = PersistenceConfigMybatis.getSessionFactory().openSession(true)) {
+            RoomDAO roomDAO = sqlSession.getMapper(RoomDAO.class);
+            roomDAO.save(room, eventId);
         }
     }
 }

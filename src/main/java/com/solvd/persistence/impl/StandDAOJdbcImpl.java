@@ -21,17 +21,7 @@ public class StandDAOJdbcImpl extends AbstractDAO<Stand> implements StandDAO {
 
     @Override
     public void save(Stand stand) {
-        String sql = "Insert into stand (price, room_id, client_id) values (?, ?, ?)";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setLong(1, stand.getPrice());
-            stmt.setLong(2, stand.getRoomId());
-            stmt.setLong(3, stand.getClientId());
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } finally {
-            PersistenceConfigJdbc.releaseConnection(connection);
-        }
+//        Nothing here
     }
 
     @Override
@@ -44,8 +34,6 @@ public class StandDAOJdbcImpl extends AbstractDAO<Stand> implements StandDAO {
                 Stand stand = new Stand();
                 stand.setId(resultSet.getLong(1));
                 stand.setPrice(resultSet.getLong(2));
-                stand.setRoomId(resultSet.getLong(3));
-                stand.setClientId(resultSet.getLong(4));
                 stands.add(stand);
             }
             return stands;
@@ -66,8 +54,6 @@ public class StandDAOJdbcImpl extends AbstractDAO<Stand> implements StandDAO {
                 Stand stand = new Stand();
                 stand.setId(resultSet.getLong(1));
                 stand.setPrice(resultSet.getLong(2));
-                stand.setRoomId(resultSet.getLong(3));
-                stand.setClientId(resultSet.getLong(4));
                 return Optional.of(stand);
             } else {
                 return Optional.empty();
@@ -80,7 +66,7 @@ public class StandDAOJdbcImpl extends AbstractDAO<Stand> implements StandDAO {
     }
 
     @Override
-    public Optional<Collection<Stand>> findManyByColumn(String key, String value) {
+    public Collection<Stand> findManyByColumn(String key, String value) {
         String sql = "Select * from stand where " + key + " = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, value);
@@ -90,11 +76,9 @@ public class StandDAOJdbcImpl extends AbstractDAO<Stand> implements StandDAO {
                 Stand stand = new Stand();
                 stand.setId(resultSet.getLong(1));
                 stand.setPrice(resultSet.getLong(2));
-                stand.setRoomId(resultSet.getLong(3));
-                stand.setClientId(resultSet.getLong(4));
                 stands.add(stand);
             }
-            return Optional.of(stands);
+            return stands;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
@@ -112,8 +96,6 @@ public class StandDAOJdbcImpl extends AbstractDAO<Stand> implements StandDAO {
                 Stand stand = new Stand();
                 stand.setId(resultSet.getLong(1));
                 stand.setPrice(resultSet.getLong(2));
-                stand.setRoomId(resultSet.getLong(3));
-                stand.setClientId(resultSet.getLong(4));
                 return Optional.of(stand);
             } else {
                 return Optional.empty();
@@ -140,12 +122,45 @@ public class StandDAOJdbcImpl extends AbstractDAO<Stand> implements StandDAO {
 
     @Override
     public void updateById(Stand stand, Long id) {
-        String sql = "Update stand set price = ?, room_id = ?, client_id = ? where id = ?";
+        String sql = "Update stand set price = ? where id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setLong(1, stand.getPrice());
-            stmt.setLong(2, stand.getRoomId());
-            stmt.setLong(3, stand.getClientId());
-            stmt.setLong(4, id);
+            stmt.setLong(2, id);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            PersistenceConfigJdbc.releaseConnection(connection);
+        }
+    }
+
+    @Override
+    public void save(Stand stand, Long roomId) {
+        String sql = "Insert into stand (price, room_id) values (?, ?)";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setLong(1, stand.getPrice());
+            stmt.setLong(2, roomId);
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected == 1) {
+                ResultSet rs = stmt.getGeneratedKeys();
+                if (rs.next()) {
+                    Long id = rs.getLong(1);
+                    stand.setId(id);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            PersistenceConfigJdbc.releaseConnection(connection);
+        }
+    }
+
+    @Override
+    public void addClient(Long standId, Long clientId) {
+        String sql = "Update stand set client_id = ? where id = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setLong(1, clientId);
+            stmt.setLong(2, standId);
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
