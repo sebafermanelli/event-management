@@ -5,17 +5,13 @@
 
 <mapper namespace="com.solvd.persistence.VisitorDAO">
     <resultMap id="VisitorResultMap" type="com.solvd.domain.Visitor" autoMapping="false">
-        <id property="id" column="id"/>
-        <result property="cuil" column="cuil"/>
-        <result property="firstName" column="first_name"/>
-        <result property="lastName" column="last_name"/>
-        <result property="address" column="address"/>
-        <result property="phone" column="phone"/>
-        <result property="email" column="email"/>
-        <collection property="attendeeTickets" columnPrefix="attendee_"
-                    resultMap="com.solvd.persistence.TicketDAO.TicketResultMap"/>
-        <collection property="buyerTickets" columnPrefix="buyer_"
-                    resultMap="com.solvd.persistence.TicketDAO.TicketResultMap"/>
+        <id property="id" column="visitor_id"/>
+        <result property="cuil" column="visitor_cuil"/>
+        <result property="firstName" column="visitor_first_name"/>
+        <result property="lastName" column="visitor_last_name"/>
+        <result property="address" column="visitor_address"/>
+        <result property="phone" column="visitor_phone"/>
+        <result property="email" column="visitor_email"/>
     </resultMap>
 
     <insert id="save" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
@@ -25,15 +21,13 @@
 
     <sql id="selectVisitor">
         Select
-        v.id as visitor_id, v.first_name as visitor_first_name, v.last_name as visitor_last_name, v.address as visitor_address, v.phone as
-        visitor_phone, v.email as visitor_email,
-        at.id as attendee_ticket_id, at.cost as attendee_ticket_cost, at.event_id as attendee_ticket_event_id, at.attendee_id as
-        attendee_ticket_attendee_id, at.buyer_id as attendee_ticket_buyer_id,
-        bt.id as buyer_ticket_id, bt.cost as buyer_ticket_cost, bt.event_id as buyer_ticket_event_id, bt.attendee_id as
-        buyer_ticket_attendee_id, bt.buyer_id as buyer_ticket_buyer_id
+        v.id as visitor_id,
+        v.first_name as visitor_first_name,
+        v.last_name as visitor_last_name,
+        v.address as visitor_address,
+        v.phone as visitor_phone,
+        v.email as visitor_email
         from visitor v
-        left join ticket at on v.id = at.attendee_id
-        left join ticket bt on v.id = bt.buyer_id
     </sql>
 
     <select id="findAll" resultMap="VisitorResultMap">
@@ -47,12 +41,12 @@
 
     <select id="findManyByColumn" resultMap="VisitorResultMap">
         <include refid="selectVisitor"/>
-        where v.#{key} = #{value}
+        where v.${key} = #{value}
     </select>
 
     <select id="findOneByColumn" resultMap="VisitorResultMap">
         <include refid="selectVisitor"/>
-        where v.#{key} = #{value}
+        where v.${key} = #{value}
     </select>
 
     <delete id="deleteById">

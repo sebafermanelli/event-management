@@ -1,20 +1,22 @@
 package com.solvd.persistence;
 
+import org.apache.ibatis.annotations.Param;
+
 import java.util.Collection;
 import java.util.Optional;
 
 public interface GenericDAO<T> {
-    void save(T entity);
+    void save(@Param("entity") T entity);
 
     Collection<T> findAll();
 
-    Optional<T> findById(Long id);
+    Optional<T> findById(@Param("id") Long id);
 
-    Collection<T> findManyByColumn(String key, String value);
+    Collection<T> findManyByColumn(@Param("key") String key, @Param("value") String value);
 
-    Optional<T> findOneByColumn(String key, String value);
+    Optional<T> findOneByColumn(@Param("key") String key, @Param("value") String value);
 
-    void deleteById(Long id);
+    void deleteById(@Param("id") Long id);
 
-    void updateById(T entity, Long id);
+    void updateById(@Param("entity") T entity, @Param("id") Long id);
 }

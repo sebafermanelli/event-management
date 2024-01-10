@@ -66,18 +66,26 @@ public class TicketDAOMybatisImpl implements TicketDAO {
     }
 
     @Override
-    public void save(Ticket ticket, Long eventId, Long attendeeId, Long buyerId) {
-        try (SqlSession sqlSession = PersistenceConfigMybatis.getSessionFactory().openSession(true)) {
-            TicketDAO ticketDAO = sqlSession.getMapper(TicketDAO.class);
-            ticketDAO.save(ticket, eventId, attendeeId, buyerId);
-        }
-    }
-
-    @Override
     public void addPresentation(Long ticketId, Long presentationId) {
         try (SqlSession sqlSession = PersistenceConfigMybatis.getSessionFactory().openSession(true)) {
             TicketDAO ticketDAO = sqlSession.getMapper(TicketDAO.class);
             ticketDAO.addPresentation(ticketId, presentationId);
+        }
+    }
+
+    @Override
+    public void removePresentation(Long ticketId, Long presentationId) {
+        try (SqlSession sqlSession = PersistenceConfigMybatis.getSessionFactory().openSession(true)) {
+            TicketDAO ticketDAO = sqlSession.getMapper(TicketDAO.class);
+            ticketDAO.removePresentation(ticketId, presentationId);
+        }
+    }
+
+    @Override
+    public Collection<Ticket> findManyByPresentationId(Long presentationId) {
+        try (SqlSession sqlSession = PersistenceConfigMybatis.getSessionFactory().openSession(true)) {
+            TicketDAO ticketDAO = sqlSession.getMapper(TicketDAO.class);
+            return ticketDAO.findManyByPresentationId(presentationId);
         }
     }
 }

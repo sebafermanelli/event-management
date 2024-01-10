@@ -20,9 +20,7 @@
         <mapper resource="mappers/ClientMapper.xml"/>
         <mapper resource="mappers/EmployeeMapper.xml"/>
         <mapper resource="mappers/EventMapper.xml"/>
-        <mapper resource="mappers/EventEmployeeMapper.xml"/>
         <mapper resource="mappers/PresentationMapper.xml"/>
-        <mapper resource="mappers/PresentationTicketMapper.xml"/>
         <mapper resource="mappers/PresenterMapper.xml"/>
         <mapper resource="mappers/RoomMapper.xml"/>
         <mapper resource="mappers/StandMapper.xml"/>

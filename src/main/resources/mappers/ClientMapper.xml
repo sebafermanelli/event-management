@@ -11,7 +11,6 @@
         <result property="address" column="client_address"/>
         <result property="phone" column="client_phone"/>
         <result property="email" column="client_email"/>
-        <collection property="stands" resultMap="com.solvd.persistence.StandDAO.StandResultMap"/>
     </resultMap>
 
     <insert id="save" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
@@ -26,12 +25,8 @@
         c.business_name as client_business_name,
         c.address as client_address,
         c.phone as client_phone,
-        c.email as client_email,
-        s.id as stand_id,
-        s.price as stand_price,
-        s.room_id as stand_room_id
+        c.email as client_email
         from client c
-        left join stand s on c.id = s.client_id
     </sql>
 
     <select id="findAll" resultMap="ClientResultMap">
@@ -50,7 +45,7 @@
 
     <select id="findOneByColumn" resultMap="ClientResultMap">
         <include refid="selectClient"/>
-        where c.#{key} = #{value}
+        where c.${key} = #{value}
     </select>
 
     <delete id="deleteById">

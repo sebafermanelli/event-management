@@ -13,7 +13,6 @@
         <result property="phone" column="presenter_phone"/>
         <result property="email" column="presenter_email"/>
         <result property="specialization" column="presenter_specialization"/>
-        <collection property="presentations" resultMap="com.solvd.persistence.PresentationDAO.PresentationResultMap"/>
     </resultMap>
 
     <insert id="save" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
@@ -24,13 +23,14 @@
 
     <sql id="selectPresenter">
         Select
-        p.id as presenter_id, p.first_name as presenter_first_name, p.last_name as presenter_last_name, p.address as presenter_address, p.phone as
-        presenter_phone, p.email as presenter_email, p.specialization as presenter_specialization,
-        pr.id as presentation_id, pr.name as presentation_name, pr.description as presentation_description, pr.start_datetime as
-        presentation_start_datetime, pr.end_datetime as presentation_end_datetime, pr.ticket_price as presentation_ticket_price, pr.room_id as
-        presentation_room_id, pr.presenter_id as presentation_presenter_id
+        p.id as presenter_id,
+        p.first_name as presenter_first_name,
+        p.last_name as presenter_last_name,
+        p.address as presenter_address,
+        p.phone as presenter_phone,
+        p.email as presenter_email,
+        p.specialization as presenter_specialization
         from presenter p
-        left join presentation pr on p.id = pr.presenter_id
     </sql>
 
     <select id="findAll" resultMap="PresenterResultMap">
@@ -44,12 +44,12 @@
 
     <select id="findManyByColumn" resultMap="PresenterResultMap">
         <include refid="selectPresenter"/>
-        where p.#{key} = #{value}
+        where p.${key} = #{value}
     </select>
 
     <select id="findOneByColumn" resultMap="PresenterResultMap">
         <include refid="selectPresenter"/>
-        where p.#{key} = #{value}
+        where p.${key} = #{value}
     </select>
 
     <delete id="deleteById">

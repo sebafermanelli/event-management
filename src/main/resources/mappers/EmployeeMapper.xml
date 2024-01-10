@@ -13,15 +13,6 @@
         <result property="phone" column="employee_phone"/>
         <result property="email" column="employee_email"/>
         <result property="salary" column="employee_salary"/>
-        <collection property="roles" resultMap="EventEmployeeResultMap"/>
-        <collection property="events" resultMap="com.solvd.persistence.EventDAO.EventResultMap"/>
-    </resultMap>
-
-    <resultMap id="EventEmployeeResultMap" type="com.solvd.domain.EventEmployee" autoMapping="false">
-        <id property="id" column="event_employee_id"/>
-        <result property="role" column="event_employee_role"/>
-        <association property="employee" resultMap="EmployeeResultMap"/>
-        <association property="event" resultMap="com.solvd.persistence.EventDAO.EventResultMap"/>
     </resultMap>
 
     <insert id="save" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
@@ -31,17 +22,16 @@
     </insert>
 
     <sql id="selectEmployee">
-        Select
-        e.id as employee_id, e.first_name as employee_first_name, e.last_name as employee_last_name, e.address as
-        employee_address, e.phone as employee_phone, e.email as employee_email, e.salary as employee_salary,
-        ee.id as event_employee_id, ee.role as event_employee_role, ee.employee_id as event_employee_employee_id,
-        ee.event_id as event_employee_event_id,
-        ev.id as event_id, ev.name as event_name, ev.theme as event_theme, ev.base_ticket_price as
-        event_base_ticket_price, ev.start_date as event_start_date, ev.end_date as event_end_date, ev.address as
-        event_address, ev.description as event_description
+        Select distinct
+        e.id as employee_id,
+        e.first_name as employee_first_name,
+        e.last_name as employee_last_name,
+        e.address as employee_address,
+        e.phone as employee_phone,
+        e.email as employee_email,
+        e.salary as employee_salary
         from employee e
-        left join event_employee ee on e.id = ee.employee_id
-        left join event ev on ev.id = ee.event_id
+        left join event_employee ee on ee.employee_id = e.id
     </sql>
 
     <select id="findAll" resultMap="EmployeeResultMap">
@@ -55,12 +45,12 @@
 
     <select id="findManyByColumn" resultMap="EmployeeResultMap">
         <include refid="selectEmployee"/>
-        where e.#{key} = #{value}
+        where e.${key} = #{value}
     </select>
 
     <select id="findOneByColumn" resultMap="EmployeeResultMap">
         <include refid="selectEmployee"/>
-        where e.#{key} = #{value}
+        where e.${key} = #{value} group by e.id
     </select>
 
     <delete id="deleteById">
@@ -78,4 +68,9 @@
         salary = #{employee.salary}
         where id = #{id}
     </update>
+
+    <select id="findManyByEventId" resultMap="EmployeeResultMap">
+        <include refid="selectEmployee"/>
+        where ee.event_id = #{eventId}
+    </select>
 </mapper>

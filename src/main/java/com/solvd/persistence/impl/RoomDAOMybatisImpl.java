@@ -64,12 +64,4 @@ public class RoomDAOMybatisImpl implements RoomDAO {
             roomDAO.updateById(room, id);
         }
     }
-
-    @Override
-    public void save(Room room, Long eventId) {
-        try (SqlSession sqlSession = PersistenceConfigMybatis.getSessionFactory().openSession(true)) {
-            RoomDAO roomDAO = sqlSession.getMapper(RoomDAO.class);
-            roomDAO.save(room, eventId);
-        }
-    }
 }

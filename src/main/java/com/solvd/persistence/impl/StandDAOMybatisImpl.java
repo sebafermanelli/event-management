@@ -66,18 +66,18 @@ public class StandDAOMybatisImpl implements StandDAO {
     }
 
     @Override
-    public void save(Stand stand, Long roomId) {
-        try (SqlSession sqlSession = PersistenceConfigMybatis.getSessionFactory().openSession(true)) {
-            StandDAO standDAO = sqlSession.getMapper(StandDAO.class);
-            standDAO.save(stand, roomId);
-        }
-    }
-
-    @Override
     public void addClient(Long standId, Long clientId) {
         try (SqlSession sqlSession = PersistenceConfigMybatis.getSessionFactory().openSession(true)) {
             StandDAO standDAO = sqlSession.getMapper(StandDAO.class);
             standDAO.addClient(standId, clientId);
+        }
+    }
+
+    @Override
+    public void removeClient(Long standId) {
+        try (SqlSession sqlSession = PersistenceConfigMybatis.getSessionFactory().openSession(true)) {
+            StandDAO standDAO = sqlSession.getMapper(StandDAO.class);
+            standDAO.removeClient(standId);
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.solvd.persistence.impl;
 
 import com.solvd.domain.Stand;
+import com.solvd.exception.ResourceNotFoundException;
 import com.solvd.persistence.AbstractDAO;
 import com.solvd.persistence.PersistenceConfigJdbc;
 import com.solvd.persistence.StandDAO;
@@ -21,7 +22,23 @@ public class StandDAOJdbcImpl extends AbstractDAO<Stand> implements StandDAO {
 
     @Override
     public void save(Stand stand) {
-//        Nothing here
+        String sql = "Insert into stand (price, room_id) values (?, ?)";
+        try (PreparedStatement stmt = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
+            stmt.setLong(1, stand.getPrice());
+            stmt.setLong(2, stand.getRoom().getId());
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected == 1) {
+                ResultSet rs = stmt.getGeneratedKeys();
+                if (rs.next()) {
+                    Long id = rs.getLong(1);
+                    stand.setId(id);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            PersistenceConfigJdbc.releaseConnection(connection);
+        }
     }
 
     @Override
@@ -34,6 +51,8 @@ public class StandDAOJdbcImpl extends AbstractDAO<Stand> implements StandDAO {
                 Stand stand = new Stand();
                 stand.setId(resultSet.getLong(1));
                 stand.setPrice(resultSet.getLong(2));
+                stand.getRoom().setId(resultSet.getLong(3));
+                stand.getClient().setId(resultSet.getLong(4));
                 stands.add(stand);
             }
             return stands;
@@ -54,6 +73,8 @@ public class StandDAOJdbcImpl extends AbstractDAO<Stand> implements StandDAO {
                 Stand stand = new Stand();
                 stand.setId(resultSet.getLong(1));
                 stand.setPrice(resultSet.getLong(2));
+                stand.getRoom().setId(resultSet.getLong(3));
+                stand.getClient().setId(resultSet.getLong(4));
                 return Optional.of(stand);
             } else {
                 return Optional.empty();
@@ -76,6 +97,8 @@ public class StandDAOJdbcImpl extends AbstractDAO<Stand> implements StandDAO {
                 Stand stand = new Stand();
                 stand.setId(resultSet.getLong(1));
                 stand.setPrice(resultSet.getLong(2));
+                stand.getRoom().setId(resultSet.getLong(3));
+                stand.getClient().setId(resultSet.getLong(4));
                 stands.add(stand);
             }
             return stands;
@@ -96,6 +119,8 @@ public class StandDAOJdbcImpl extends AbstractDAO<Stand> implements StandDAO {
                 Stand stand = new Stand();
                 stand.setId(resultSet.getLong(1));
                 stand.setPrice(resultSet.getLong(2));
+                stand.getRoom().setId(resultSet.getLong(3));
+                stand.getClient().setId(resultSet.getLong(4));
                 return Optional.of(stand);
             } else {
                 return Optional.empty();
@@ -112,7 +137,10 @@ public class StandDAOJdbcImpl extends AbstractDAO<Stand> implements StandDAO {
         String sql = "Delete from stand where id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setLong(1, id);
-            stmt.executeUpdate();
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected != 1) {
+                throw new ResourceNotFoundException("The stand with the id " + id + " not found in the database");
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
@@ -126,27 +154,9 @@ public class StandDAOJdbcImpl extends AbstractDAO<Stand> implements StandDAO {
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setLong(1, stand.getPrice());
             stmt.setLong(2, id);
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } finally {
-            PersistenceConfigJdbc.releaseConnection(connection);
-        }
-    }
-
-    @Override
-    public void save(Stand stand, Long roomId) {
-        String sql = "Insert into stand (price, room_id) values (?, ?)";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setLong(1, stand.getPrice());
-            stmt.setLong(2, roomId);
             int rowsAffected = stmt.executeUpdate();
-            if (rowsAffected == 1) {
-                ResultSet rs = stmt.getGeneratedKeys();
-                if (rs.next()) {
-                    Long id = rs.getLong(1);
-                    stand.setId(id);
-                }
+            if (rowsAffected != 1) {
+                throw new ResourceNotFoundException("The stand with the id " + id + " not found in the database");
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -161,7 +171,26 @@ public class StandDAOJdbcImpl extends AbstractDAO<Stand> implements StandDAO {
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setLong(1, clientId);
             stmt.setLong(2, standId);
-            stmt.executeUpdate();
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected != 1) {
+                throw new ResourceNotFoundException("The stand with the id " + standId + " or the client with id " + clientId + " not found in the database");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            PersistenceConfigJdbc.releaseConnection(connection);
+        }
+    }
+
+    @Override
+    public void removeClient(Long standId) {
+        String sql = "Update stand set client_id = NULL where id = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setLong(1, standId);
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected != 1) {
+                throw new ResourceNotFoundException("The stand with the id " + standId + " not found in the database");
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {

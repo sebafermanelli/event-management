@@ -1,6 +1,7 @@
 package com.solvd.persistence.impl;
 
 import com.solvd.domain.Client;
+import com.solvd.exception.ResourceNotFoundException;
 import com.solvd.persistence.AbstractDAO;
 import com.solvd.persistence.ClientDAO;
 import com.solvd.persistence.PersistenceConfigJdbc;
@@ -22,7 +23,7 @@ public class ClientDAOJdbcImpl extends AbstractDAO<Client> implements ClientDAO 
     @Override
     public void save(Client client) {
         String sql = "Insert into client (cuit, business_name, address, phone, email) values (?, ?, ?, ?, ?)";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        try (PreparedStatement stmt = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, client.getCuit());
             stmt.setString(2, client.getBusinessName());
             stmt.setString(3, client.getAddress());
@@ -147,7 +148,10 @@ public class ClientDAOJdbcImpl extends AbstractDAO<Client> implements ClientDAO 
         String sql = "Delete from client where id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setLong(1, id);
-            stmt.executeUpdate();
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected != 1) {
+                throw new ResourceNotFoundException("The client with the id " + id + " not found in the database");
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
@@ -165,7 +169,10 @@ public class ClientDAOJdbcImpl extends AbstractDAO<Client> implements ClientDAO 
             stmt.setString(4, client.getPhone());
             stmt.setString(5, client.getEmail());
             stmt.setLong(6, id);
-            stmt.executeUpdate();
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected != 1) {
+                throw new ResourceNotFoundException("The client with the id " + id + " not found in the database");
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {

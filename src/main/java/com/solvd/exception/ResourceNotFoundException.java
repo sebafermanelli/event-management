@@ -1,4 +1,4 @@
-package com.solvd.domain.exception;
+package com.solvd.exception;
 
 public class ResourceNotFoundException extends RuntimeException {
 

@@ -1,7 +1,6 @@
 package com.solvd.domain;
 
 import java.sql.Date;
-import java.util.List;
 
 public class Presentation extends BaseEntity {
     private String name;
@@ -9,7 +8,8 @@ public class Presentation extends BaseEntity {
     private Date startDateTime;
     private Date endDateTime;
     private Long ticketPrice;
-    private List<Ticket> tickets;
+    private Room room = new Room();
+    private Presenter presenter = new Presenter();
 
     public String getName() {
         return name;
@@ -51,11 +51,19 @@ public class Presentation extends BaseEntity {
         this.ticketPrice = ticketPrice;
     }
 
-    public List<Ticket> getTickets() {
-        return tickets;
+    public Room getRoom() {
+        return room;
     }
 
-    public void setTickets(List<Ticket> tickets) {
-        this.tickets = tickets;
+    public void setRoom(Room room) {
+        this.room = room;
+    }
+
+    public Presenter getPresenter() {
+        return presenter;
+    }
+
+    public void setPresenter(Presenter presenter) {
+        this.presenter = presenter;
     }
 }

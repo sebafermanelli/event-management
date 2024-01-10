@@ -1,6 +1,7 @@
 package com.solvd.persistence.impl;
 
 import com.solvd.domain.Visitor;
+import com.solvd.exception.ResourceNotFoundException;
 import com.solvd.persistence.AbstractDAO;
 import com.solvd.persistence.PersistenceConfigJdbc;
 import com.solvd.persistence.VisitorDAO;
@@ -22,7 +23,7 @@ public class VisitorDAOJdbcImpl extends AbstractDAO<Visitor> implements VisitorD
     @Override
     public void save(Visitor visitor) {
         String sql = "Insert into visitor (cuil, first_name, last_name, address, phone, email) values (?, ?, ?, ?, ?, ?)";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        try (PreparedStatement stmt = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, visitor.getCuil());
             stmt.setString(2, visitor.getFirstName());
             stmt.setString(3, visitor.getLastName());
@@ -145,7 +146,10 @@ public class VisitorDAOJdbcImpl extends AbstractDAO<Visitor> implements VisitorD
         String sql = "Delete from visitor where id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setLong(1, id);
-            stmt.executeUpdate();
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected != 1) {
+                throw new ResourceNotFoundException("The visitor with the id " + id + " not found in the database");
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
@@ -164,7 +168,10 @@ public class VisitorDAOJdbcImpl extends AbstractDAO<Visitor> implements VisitorD
             stmt.setString(5, visitor.getPhone());
             stmt.setString(6, visitor.getEmail());
             stmt.setLong(7, id);
-            stmt.executeUpdate();
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected != 1) {
+                throw new ResourceNotFoundException("The visitor with the id " + id + " not found in the database");
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {

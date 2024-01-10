@@ -1,6 +1,7 @@
 package com.solvd.domain;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Event extends BaseEntity {
@@ -11,9 +12,7 @@ public class Event extends BaseEntity {
     private Date endDate;
     private String address;
     private String description;
-    private List<Room> rooms;
-    private List<Ticket> tickets;
-    private List<Employee> employees;
+    private List<Employee> employees = new ArrayList<>();
 
     public String getName() {
         return name;
@@ -69,22 +68,6 @@ public class Event extends BaseEntity {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public List<Room> getRooms() {
-        return rooms;
-    }
-
-    public void setRooms(List<Room> rooms) {
-        this.rooms = rooms;
-    }
-
-    public List<Ticket> getTickets() {
-        return tickets;
-    }
-
-    public void setTickets(List<Ticket> tickets) {
-        this.tickets = tickets;
     }
 
     public List<Employee> getEmployees() {

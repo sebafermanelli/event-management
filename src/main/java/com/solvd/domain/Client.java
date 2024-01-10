@@ -1,14 +1,11 @@
 package com.solvd.domain;
 
-import java.util.List;
-
 public class Client extends BaseEntity {
     private String cuit;
     private String businessName;
     private String address;
     private String phone;
     private String email;
-    private List<Stand> stands;
 
     public String getCuit() {
         return cuit;
@@ -48,13 +45,5 @@ public class Client extends BaseEntity {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public List<Stand> getStands() {
-        return stands;
-    }
-
-    public void setStands(List<Stand> stands) {
-        this.stands = stands;
     }
 }

@@ -1,17 +1,15 @@
 package com.solvd;
 
-import com.solvd.domain.Client;
-import com.solvd.service.impl.ClientServiceJdbcImpl;
-
-import java.util.Collection;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class Main {
+    private static final Logger LOGGER = LogManager.getLogger(Main.class);
 
     public static void main(String[] args) {
-        ClientServiceJdbcImpl clientServiceJdbc = new ClientServiceJdbcImpl();
-        Collection<Client> clients = clientServiceJdbc.getAll();
-        for (Client client : clients) {
-            System.out.println(client.toString());
-        }
+        LOGGER.info("Starting...");
+//        EmployeeServiceMybatisImpl employeeServiceMybatis = new EmployeeServiceMybatisImpl();
+//        Collection<Employee> employees = employeeServiceMybatis.getAll();
+//        employees.forEach(employee -> LOGGER.info(employee.toString()));
     }
 }

@@ -1,7 +1,7 @@
 package com.solvd.persistence.impl;
 
-import com.solvd.domain.Presentation;
 import com.solvd.domain.Ticket;
+import com.solvd.exception.ResourceNotFoundException;
 import com.solvd.persistence.AbstractDAO;
 import com.solvd.persistence.PersistenceConfigJdbc;
 import com.solvd.persistence.TicketDAO;
@@ -12,7 +12,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 
 public class TicketDAOJdbcImpl extends AbstractDAO<Ticket> implements TicketDAO {
@@ -23,7 +22,25 @@ public class TicketDAOJdbcImpl extends AbstractDAO<Ticket> implements TicketDAO 
 
     @Override
     public void save(Ticket ticket) {
-//        Nothing here
+        String sql = "Insert into ticket (cost, event_id, attendee_id, buyer_id) values (?, ?, ?, ?)";
+        try (PreparedStatement stmt = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
+            stmt.setLong(1, ticket.getCost());
+            stmt.setLong(2, ticket.getEvent().getId());
+            stmt.setLong(3, ticket.getAttendee().getId());
+            stmt.setLong(4, ticket.getBuyer().getId());
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected == 1) {
+                ResultSet rs = stmt.getGeneratedKeys();
+                if (rs.next()) {
+                    Long id = rs.getLong(1);
+                    ticket.setId(id);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            PersistenceConfigJdbc.releaseConnection(connection);
+        }
     }
 
     @Override
@@ -36,6 +53,9 @@ public class TicketDAOJdbcImpl extends AbstractDAO<Ticket> implements TicketDAO 
                 Ticket ticket = new Ticket();
                 ticket.setId(resultSet.getLong(1));
                 ticket.setCost(resultSet.getLong(2));
+                ticket.getEvent().setId(resultSet.getLong(3));
+                ticket.getAttendee().setId(resultSet.getLong(4));
+                ticket.getBuyer().setId(resultSet.getLong(5));
                 tickets.add(ticket);
             }
             return tickets;
@@ -56,6 +76,9 @@ public class TicketDAOJdbcImpl extends AbstractDAO<Ticket> implements TicketDAO 
                 Ticket ticket = new Ticket();
                 ticket.setId(resultSet.getLong(1));
                 ticket.setCost(resultSet.getLong(2));
+                ticket.getEvent().setId(resultSet.getLong(3));
+                ticket.getAttendee().setId(resultSet.getLong(4));
+                ticket.getBuyer().setId(resultSet.getLong(5));
                 return Optional.of(ticket);
             } else {
                 return Optional.empty();
@@ -78,6 +101,9 @@ public class TicketDAOJdbcImpl extends AbstractDAO<Ticket> implements TicketDAO 
                 Ticket ticket = new Ticket();
                 ticket.setId(resultSet.getLong(1));
                 ticket.setCost(resultSet.getLong(2));
+                ticket.getEvent().setId(resultSet.getLong(3));
+                ticket.getAttendee().setId(resultSet.getLong(4));
+                ticket.getBuyer().setId(resultSet.getLong(5));
                 tickets.add(ticket);
             }
             return tickets;
@@ -98,6 +124,9 @@ public class TicketDAOJdbcImpl extends AbstractDAO<Ticket> implements TicketDAO 
                 Ticket ticket = new Ticket();
                 ticket.setId(resultSet.getLong(1));
                 ticket.setCost(resultSet.getLong(2));
+                ticket.getEvent().setId(resultSet.getLong(3));
+                ticket.getAttendee().setId(resultSet.getLong(4));
+                ticket.getBuyer().setId(resultSet.getLong(5));
                 return Optional.of(ticket);
             } else {
                 return Optional.empty();
@@ -114,7 +143,10 @@ public class TicketDAOJdbcImpl extends AbstractDAO<Ticket> implements TicketDAO 
         String sql = "Delete from ticket where id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setLong(1, id);
-            stmt.executeUpdate();
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected != 1) {
+                throw new ResourceNotFoundException("The ticket with the id " + id + " not found in the database");
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
@@ -128,29 +160,9 @@ public class TicketDAOJdbcImpl extends AbstractDAO<Ticket> implements TicketDAO 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setLong(1, ticket.getCost());
             stmt.setLong(2, id);
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } finally {
-            PersistenceConfigJdbc.releaseConnection(connection);
-        }
-    }
-
-    @Override
-    public void save(Ticket ticket, Long eventId, Long attendeeId, Long buyerId) {
-        String sql = "Insert into ticket (cost, event_id, attendee_id, buyer_id) values (?, ?, ?, ?)";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setLong(1, ticket.getCost());
-            stmt.setLong(2, eventId);
-            stmt.setLong(3, attendeeId);
-            stmt.setLong(4, buyerId);
             int rowsAffected = stmt.executeUpdate();
-            if (rowsAffected == 1) {
-                ResultSet rs = stmt.getGeneratedKeys();
-                if (rs.next()) {
-                    Long id = rs.getLong(1);
-                    ticket.setId(id);
-                }
+            if (rowsAffected != 1) {
+                throw new ResourceNotFoundException("The ticket with the id " + id + " not found in the database");
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -165,7 +177,46 @@ public class TicketDAOJdbcImpl extends AbstractDAO<Ticket> implements TicketDAO 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setLong(1, ticketId);
             stmt.setLong(2, presentationId);
-            stmt.executeUpdate();
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected != 1) {
+                throw new ResourceNotFoundException("The entity with the ticket id " + ticketId + " and presentation id " + presentationId + " not found in the database");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            PersistenceConfigJdbc.releaseConnection(connection);
+        }
+    }
+
+    @Override
+    public void removePresentation(Long ticketId, Long presentationId) {
+        String sql = "Delete from presentation_ticket where ticket_id = ? and presentation_id = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setLong(1, ticketId);
+            stmt.setLong(2, presentationId);
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected != 1) {
+                throw new ResourceNotFoundException("The entity with the ticket id " + ticketId + " and presentation id " + presentationId + " not found in the database");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            PersistenceConfigJdbc.releaseConnection(connection);
+        }
+    }
+
+    @Override
+    public Collection<Ticket> findManyByPresentationId(Long presentationId) {
+        String sql = "Select * from presentation_ticket where presentation_id = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setLong(1, presentationId);
+            ResultSet resultSet = stmt.executeQuery();
+            Collection<Ticket> tickets = new ArrayList<>();
+            while (resultSet.next()) {
+                Optional<Ticket> ticket = findById(resultSet.getLong(2));
+                ticket.ifPresent(tickets::add);
+            }
+            return tickets;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {

@@ -64,4 +64,12 @@ public class EmployeeDAOMybatisImpl implements EmployeeDAO {
             employeeDAO.updateById(employee, id);
         }
     }
+
+    @Override
+    public Collection<Employee> findManyByEventId(Long eventId) {
+        try (SqlSession sqlSession = PersistenceConfigMybatis.getSessionFactory().openSession(true)) {
+            EmployeeDAO employeeDAO = sqlSession.getMapper(EmployeeDAO.class);
+            return employeeDAO.findManyByEventId(eventId);
+        }
+    }
 }

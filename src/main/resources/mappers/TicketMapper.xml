@@ -7,24 +7,79 @@
     <resultMap id="TicketResultMap" type="com.solvd.domain.Ticket" autoMapping="false">
         <id property="id" column="ticket_id"/>
         <result property="cost" column="ticket_cost"/>
+        <association property="event" resultMap="com.solvd.persistence.EventDAO.EventResultMap"/>
+        <association property="attendee" columnPrefix="attendee_"
+                     resultMap="com.solvd.persistence.VisitorDAO.VisitorResultMap"/>
+        <association property="buyer" columnPrefix="buyer_"
+                     resultMap="com.solvd.persistence.VisitorDAO.VisitorResultMap"/>
         <collection property="presentations" resultMap="com.solvd.persistence.PresentationDAO.PresentationResultMap"/>
     </resultMap>
 
     <insert id="save" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
         Insert into ticket (cost, event_id, attendee_id, buyer_id)
-        values (#{ticket.cost}, #{eventId}, #{attendeeId}, #{buyerId})
+        values (#{ticket.cost}, #{ticket.event.getId()}, #{ticket.attendee.getId()}, #{ticket.buyer.getId()})
     </insert>
 
     <sql id="selectTicket">
         Select
-        t.id as ticket_id, t.cost as ticket_cost, t.event_id as ticket_event_id, t.attendee_id as ticket_attendee_id, t.buyer_id as ticket_buyer_id,
-        pt.id as presentation_ticket_id, pt.presentation_id as presentation_ticket_presentation_id, pt.ticket_id as presentation_ticket_ticket_id,
-        p.id as presentation_id, p.name as presentation_name, p.description as presentation_description, p.start_datetime as
-        presentation_start_datetime, p.end_datetime as presentation_end_datetime, p.ticket_price as presentation_ticket_price, p.room_id as
-        presentation_room_id, p.presenter_id as presentation_presenter_id
+        t.id as ticket_id,
+        t.cost as ticket_cost,
+        ev.id as event_id,
+        ev.name as event_name,
+        ev.theme as event_theme,
+        ev.base_ticket_price as event_base_ticket_price,
+        ev.start_date as event_start_date,
+        ev.end_date as event_end_date,
+        ev.address as event_address,
+        ev.description as event_description,
+        e.id as employee_id,
+        e.first_name as employee_first_name,
+        e.last_name as employee_last_name,
+        e.address as employee_address,
+        e.phone as employee_phone,
+        e.email as employee_email,
+        e.salary as employee_salary,
+        a.id as attendee_visitor_id,
+        a.first_name as attendee_visitor_first_name,
+        a.last_name as attendee_visitor_last_name,
+        a.address as attendee_visitor_address,
+        a.phone as attendee_visitor_phone,
+        a.email as attendee_visitor_email,
+        b.id as buyer_visitor_id,
+        b.first_name as buyer_visitor_first_name,
+        b.last_name as buyer_visitor_last_name,
+        b.address as buyer_visitor_address,
+        b.phone as buyer_visitor_phone,
+        b.email as buyer_visitor_email,
+        p.id as presentation_id,
+        p.name as presentation_name,
+        p.description as presentation_description,
+        p.start_datetime as presentation_start_datetime,
+        p.end_datetime as presentation_end_datetime,
+        p.ticket_price as presentation_ticket_price,
+        pr.id as presenter_id,
+        pr.cuil as presenter_cuil,
+        pr.first_name as presenter_first_name,
+        pr.last_name as presenter_last_name,
+        pr.address as presenter_address,
+        pr.phone as presenter_phone,
+        pr.email as presenter_email,
+        pr.specialization as presenter_specialization,
+        r.id as room_id,
+        r.name as room_name,
+        r.surface as room_surface,
+        r.capacity as room_capacity,
+        r.status as room_status
         from ticket t
-        left join presentation_ticket pt on t.id = pt.ticket_id
-        left join presentation p on p.id = pt.presentation_id
+        left join event ev on t.event_id = ev.id
+        left join event_employee ee on ee.event_id = ev.id
+        left join employee e on ee.employee_id = e.id
+        left join visitor a on t.attendee_id = a.id
+        left join visitor b on t.buyer_id = b.id
+        left join presentation_ticket pt on pt.ticket_id = t.id
+        left join presentation p on pt.presentation_id = p.id
+        left join presenter pr on p.presenter_id = pr.id
+        left join room r on p.room_id = r.id
     </sql>
 
     <select id="findAll" resultMap="TicketResultMap">
@@ -38,12 +93,12 @@
 
     <select id="findManyByColumn" resultMap="TicketResultMap">
         <include refid="selectTicket"/>
-        where t.#{key} = #{value}
+        where t.${key} = #{value}
     </select>
 
     <select id="findOneByColumn" resultMap="TicketResultMap">
         <include refid="selectTicket"/>
-        where t.#{key} = #{value}
+        where t.${key} = #{value}
     </select>
 
     <delete id="deleteById">
@@ -63,4 +118,8 @@
         Insert into presentation_ticket (ticket_id, presentation_id)
         values (#{ticketId}, #{presentationId})
     </insert>
+
+    <delete id="removePresentation">
+        Delete from presentation_ticket where ticket_id = #{ticketId} and presentation_id = #{presentationId}
+    </delete>
 </mapper>

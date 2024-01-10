@@ -1,6 +1,7 @@
 package com.solvd.persistence.impl;
 
 import com.solvd.domain.Room;
+import com.solvd.exception.ResourceNotFoundException;
 import com.solvd.persistence.AbstractDAO;
 import com.solvd.persistence.PersistenceConfigJdbc;
 import com.solvd.persistence.RoomDAO;
@@ -21,7 +22,26 @@ public class RoomDAOJdbcImpl extends AbstractDAO<Room> implements RoomDAO {
 
     @Override
     public void save(Room room) {
-//        Nothing here
+        String sql = "Insert into room (name, surface, capacity, status, event_id) values (?, ?, ?, ?, ?)";
+        try (PreparedStatement stmt = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
+            stmt.setString(1, room.getName());
+            stmt.setLong(2, room.getSurface());
+            stmt.setLong(3, room.getCapacity());
+            stmt.setString(4, room.getStatus());
+            stmt.setLong(5, room.getEvent().getId());
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected == 1) {
+                ResultSet rs = stmt.getGeneratedKeys();
+                if (rs.next()) {
+                    Long id = rs.getLong(1);
+                    room.setId(id);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            PersistenceConfigJdbc.releaseConnection(connection);
+        }
     }
 
     @Override
@@ -37,6 +57,7 @@ public class RoomDAOJdbcImpl extends AbstractDAO<Room> implements RoomDAO {
                 room.setSurface(resultSet.getLong(3));
                 room.setCapacity(resultSet.getLong(4));
                 room.setStatus(resultSet.getString(5));
+                room.getEvent().setId(resultSet.getLong(6));
                 rooms.add(room);
             }
             return rooms;
@@ -60,6 +81,7 @@ public class RoomDAOJdbcImpl extends AbstractDAO<Room> implements RoomDAO {
                 room.setSurface(resultSet.getLong(3));
                 room.setCapacity(resultSet.getLong(4));
                 room.setStatus(resultSet.getString(5));
+                room.getEvent().setId(resultSet.getLong(6));
                 return Optional.of(room);
             } else {
                 return Optional.empty();
@@ -85,6 +107,7 @@ public class RoomDAOJdbcImpl extends AbstractDAO<Room> implements RoomDAO {
                 room.setSurface(resultSet.getLong(3));
                 room.setCapacity(resultSet.getLong(4));
                 room.setStatus(resultSet.getString(5));
+                room.getEvent().setId(resultSet.getLong(6));
                 rooms.add(room);
             }
             return rooms;
@@ -108,6 +131,7 @@ public class RoomDAOJdbcImpl extends AbstractDAO<Room> implements RoomDAO {
                 room.setSurface(resultSet.getLong(3));
                 room.setCapacity(resultSet.getLong(4));
                 room.setStatus(resultSet.getString(5));
+                room.getEvent().setId(resultSet.getLong(6));
                 return Optional.of(room);
             } else {
                 return Optional.empty();
@@ -124,7 +148,10 @@ public class RoomDAOJdbcImpl extends AbstractDAO<Room> implements RoomDAO {
         String sql = "Delete from room where id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setLong(1, id);
-            stmt.executeUpdate();
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected != 1) {
+                throw new ResourceNotFoundException("The room with the id " + id + " not found in the database");
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
@@ -134,37 +161,17 @@ public class RoomDAOJdbcImpl extends AbstractDAO<Room> implements RoomDAO {
 
     @Override
     public void updateById(Room room, Long id) {
-        String sql = "Update room set name = ?, surface = ?, capacity = ?, status = ? where id = ?";
+        String sql = "Update room set name = ?, surface = ?, capacity = ?, status = ?, event_id = ? where id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, room.getName());
             stmt.setLong(2, room.getSurface());
             stmt.setLong(3, room.getCapacity());
             stmt.setString(4, room.getStatus());
-            stmt.setLong(5, id);
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } finally {
-            PersistenceConfigJdbc.releaseConnection(connection);
-        }
-    }
-
-    @Override
-    public void save(Room room, Long eventId) {
-        String sql = "Insert into room (name, surface, capacity, status, event_id) values (?, ?, ?, ?, ?)";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setString(1, room.getName());
-            stmt.setLong(2, room.getSurface());
-            stmt.setLong(3, room.getCapacity());
-            stmt.setString(4, room.getStatus());
-            stmt.setLong(5, eventId);
+            stmt.setLong(5, room.getEvent().getId());
+            stmt.setLong(6, id);
             int rowsAffected = stmt.executeUpdate();
-            if (rowsAffected == 1) {
-                ResultSet rs = stmt.getGeneratedKeys();
-                if (rs.next()) {
-                    Long id = rs.getLong(1);
-                    room.setId(id);
-                }
+            if (rowsAffected != 1) {
+                throw new ResourceNotFoundException("The room with the id " + id + " not found in the database");
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);

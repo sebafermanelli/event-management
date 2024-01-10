@@ -64,4 +64,28 @@ public class EventDAOMybatisImpl implements EventDAO {
             eventDAO.updateById(event, id);
         }
     }
+
+    @Override
+    public void addEmployee(Long eventId, Long employeeId) {
+        try (SqlSession sqlSession = PersistenceConfigMybatis.getSessionFactory().openSession(true)) {
+            EventDAO eventDAO = sqlSession.getMapper(EventDAO.class);
+            eventDAO.addEmployee(eventId, employeeId);
+        }
+    }
+
+    @Override
+    public void removeEmployee(Long eventId, Long employeeId) {
+        try (SqlSession sqlSession = PersistenceConfigMybatis.getSessionFactory().openSession(true)) {
+            EventDAO eventDAO = sqlSession.getMapper(EventDAO.class);
+            eventDAO.removeEmployee(eventId, employeeId);
+        }
+    }
+
+    @Override
+    public Collection<Event> findManyByEmployeeId(Long employeeId) {
+        try (SqlSession sqlSession = PersistenceConfigMybatis.getSessionFactory().openSession(true)) {
+            EventDAO eventDAO = sqlSession.getMapper(EventDAO.class);
+            return eventDAO.findManyByEmployeeId(employeeId);
+        }
+    }
 }

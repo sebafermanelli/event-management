@@ -66,10 +66,10 @@ public class PresentationDAOMybatisImpl implements PresentationDAO {
     }
 
     @Override
-    public void save(Presentation presentation, Long roomId, Long presenterId) {
+    public Collection<Presentation> findManyByTicketId(Long ticketId) {
         try (SqlSession sqlSession = PersistenceConfigMybatis.getSessionFactory().openSession(true)) {
             PresentationDAO presentationDAO = sqlSession.getMapper(PresentationDAO.class);
-            presentationDAO.save(presentation, roomId, presenterId);
+            return presentationDAO.findManyByTicketId(ticketId);
         }
     }
 }

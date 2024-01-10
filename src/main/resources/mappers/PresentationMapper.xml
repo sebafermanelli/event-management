@@ -11,26 +11,49 @@
         <result property="startDateTime" column="presentation_start_datetime"/>
         <result property="endDateTime" column="presentation_end_datetime"/>
         <result property="ticketPrice" column="presentation_ticket_price"/>
-        <collection property="tickets" resultMap="com.solvd.persistence.TicketDAO.TicketResultMap"/>
+        <association property="room" resultMap="com.solvd.persistence.RoomDAO.RoomResultMap"/>
+        <association property="presenter" resultMap="com.solvd.persistence.PresenterDAO.PresenterResultMap"/>
     </resultMap>
 
     <insert id="save" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
         Insert into presentation (name, description, start_datetime, end_datetime, ticket_price, room_id, presenter_id)
         values (#{presentation.name}, #{presentation.description}, #{presentation.startDateTime}, #{presentation.endDateTime},
-        #{presentation.ticketPrice}, #{roomId}, #{presenterId})
+        #{presentation.ticketPrice}, #{presentation.room.getId()}, #{presentation.presenter.getId()})
     </insert>
 
     <sql id="selectPresentation">
         Select
-        p.id as presentation_id, p.name as presentation_name, p.description as presentation_description, p.start_datetime as
-        presentation_start_datetime, p.end_datetime as presentation_end_datetime, p.ticket_price as presentation_ticket_price, p.room_id as
-        presentation_room_id, p.presenter_id as presentation_presenter_id,
-        pt.id as presentation_ticket_id, pt.presentation_id as presentation_ticket_presentation_id, pt.ticket_id as presentation_ticket_ticket_id,
-        t.id as ticket_id, t.cost as ticket_cost, t.event_id as ticket_event_id, t.attendee_id as ticket_attendee_id,
-        t.buyer_id as ticket_buyer_id
+        p.id as presentation_id,
+        p.name as presentation_name,
+        p.description as presentation_description,
+        p.start_datetime as presentation_start_datetime,
+        p.end_datetime as presentation_end_datetime,
+        p.ticket_price as presentation_ticket_price,
+        pr.id as presenter_id,
+        pr.cuil as presenter_cuil,
+        pr.first_name as presenter_first_name,
+        pr.last_name as presenter_last_name,
+        pr.address as presenter_address,
+        pr.phone as presenter_phone,
+        pr.email as presenter_email,
+        pr.specialization as presenter_specialization,
+        r.id as room_id,
+        r.name as room_name,
+        r.surface as room_surface,
+        r.capacity as room_capacity,
+        r.status as room_status,
+        e.id as event_id,
+        e.name as event_name,
+        e.theme as event_theme,
+        e.base_ticket_price as event_base_ticket_price,
+        e.start_date as event_start_date,
+        e.end_date as event_end_date,
+        e.address as event_address,
+        e.description as event_description
         from presentation p
-        left join presentation_ticket pt on p.id = pt.presentation_id
-        left join ticket t on t.id = pt.ticket_id
+        left join presenter pr on p.presenter_id = pr.id
+        left join room r on p.room_id = r.id
+        left join event e on r.event_id = e.id
     </sql>
 
     <select id="findAll" resultMap="PresentationResultMap">
@@ -44,12 +67,12 @@
 
     <select id="findManyByColumn" resultMap="PresentationResultMap">
         <include refid="selectPresentation"/>
-        where p.#{key} = #{value}
+        where p.${key} = #{value}
     </select>
 
     <select id="findOneByColumn" resultMap="PresentationResultMap">
         <include refid="selectPresentation"/>
-        where p.#{key} = #{value}
+        where p.${key} = #{value}
     </select>
 
     <delete id="deleteById">
@@ -62,7 +85,9 @@
         description = #{presentation.description},
         start_datetime = #{presentation.startDateTime},
         end_datetime = #{presentation.endDateTime},
-        ticket_price = #{presentation.ticketPrice}
+        ticket_price = #{presentation.ticketPrice},
+        room_id = #{presentation.room.getId()},
+        presenter_id = #{presentation.presenter.getId()}
         where id = #{id}
     </update>
 </mapper>

@@ -10,25 +10,40 @@
         <result property="surface" column="surface"/>
         <result property="capacity" column="capacity"/>
         <result property="status" column="status"/>
-        <collection property="presentations" resultMap="com.solvd.persistence.PresentationDAO.PresentationResultMap"/>
-        <collection property="stands" resultMap="com.solvd.persistence.StandDAO.StandResultMap"/>
+        <association property="event" resultMap="com.solvd.persistence.EventDAO.EventResultMap"/>
     </resultMap>
 
     <insert id="save" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
         Insert into room (name, surface, capacity, status, event_id)
-        values (#{room.name}, #{room.surface}, #{room.capacity}, #{room.status}, #{eventId})
+        values (#{room.name}, #{room.surface}, #{room.capacity}, #{room.status}, #{room.event.getId()})
     </insert>
 
     <sql id="selectRoom">
         Select
-        r.id as room_id, r.name as room_name, r.surface as room_surface, r.capacity as room_capacity, r.status as room_status, r.event_id as
-        room_event_id,
-        p.id as presenter_id, p.first_name as presenter_first_name, p.last_name as presenter_last_name, p.address as presenter_address, p.phone as
-        presenter_phone, p.email as presenter_email, p.specialization as presenter_specialization,
-        s.id as stand_id, s.price as stand_price, s.room_id as stand_room_id, s.client_id as stand_client_id
+        r.id as room_id,
+        r.name as room_name,
+        r.surface as room_surface,
+        r.capacity as room_capacity,
+        r.status as room_status,
+        ev.id as event_id,
+        ev.name as event_name,
+        ev.theme as event_theme,
+        ev.base_ticket_price as event_base_ticket_price,
+        ev.start_date as event_start_date,
+        ev.end_date as event_end_date,
+        ev.address as event_address,
+        ev.description as event_description,
+        e.id as employee_id,
+        e.first_name as employee_first_name,
+        e.last_name as employee_last_name,
+        e.address as employee_address,
+        e.phone as employee_phone,
+        e.email as employee_email,
+        e.salary as employee_salary
         from room r
-        left join presentation p on r.id = p.room_id
-        left join stand s on r.id = s.room_id
+        left join event ev on r.event_id = ev.id
+        left join event_employee ee on ee.event_id = ev.id
+        left join employee e on ee.employee_id = e.id
     </sql>
 
     <select id="findAll" resultMap="RoomResultMap">
@@ -42,12 +57,12 @@
 
     <select id="findManyByColumn" resultMap="RoomResultMap">
         <include refid="selectRoom"/>
-        where r.#{key} = #{value}
+        where r.${key} = #{value}
     </select>
 
     <select id="findOneByColumn" resultMap="RoomResultMap">
         <include refid="selectRoom"/>
-        where r.#{key} = #{value}
+        where r.${key} = #{value}
     </select>
 
     <delete id="deleteById">
@@ -59,7 +74,8 @@
         name = #{room.name},
         surface = #{room.surface},
         capacity = #{room.capacity},
-        status = #{room.status}
+        status = #{room.status},
+        event_id = #{room.event.getId()}
         where id = #{id}
     </update>
 </mapper>

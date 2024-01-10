@@ -1,14 +1,11 @@
 package com.solvd.domain;
 
-import java.util.List;
-
 public class Room extends BaseEntity {
     private String name;
     private Long surface;
     private Long capacity;
     private String status;
-    private List<Presentation> presentations;
-    private List<Stand> stands;
+    private Event event = new Event();
 
     public String getName() {
         return name;
@@ -42,19 +39,11 @@ public class Room extends BaseEntity {
         this.status = status;
     }
 
-    public List<Presentation> getPresentations() {
-        return presentations;
+    public Event getEvent() {
+        return event;
     }
 
-    public void setPresentations(List<Presentation> presentations) {
-        this.presentations = presentations;
-    }
-
-    public List<Stand> getStands() {
-        return stands;
-    }
-
-    public void setStands(List<Stand> stands) {
-        this.stands = stands;
+    public void setEvent(Event event) {
+        this.event = event;
     }
 }

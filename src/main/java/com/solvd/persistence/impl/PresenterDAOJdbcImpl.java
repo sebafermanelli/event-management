@@ -1,6 +1,7 @@
 package com.solvd.persistence.impl;
 
 import com.solvd.domain.Presenter;
+import com.solvd.exception.ResourceNotFoundException;
 import com.solvd.persistence.AbstractDAO;
 import com.solvd.persistence.PersistenceConfigJdbc;
 import com.solvd.persistence.PresenterDAO;
@@ -22,7 +23,7 @@ public class PresenterDAOJdbcImpl extends AbstractDAO<Presenter> implements Pres
     @Override
     public void save(Presenter presenter) {
         String sql = "Insert into presenter (cuil, first_name, last_name, address, phone, email, specialization) values (?, ?, ?, ?, ?, ?, ?)";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        try (PreparedStatement stmt = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, presenter.getCuil());
             stmt.setString(2, presenter.getFirstName());
             stmt.setString(3, presenter.getLastName());
@@ -157,7 +158,10 @@ public class PresenterDAOJdbcImpl extends AbstractDAO<Presenter> implements Pres
         String sql = "Delete from presenter where id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setLong(1, id);
-            stmt.executeUpdate();
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected != 1) {
+                throw new ResourceNotFoundException("The presenter with the id " + id + " not found in the database");
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
@@ -177,7 +181,10 @@ public class PresenterDAOJdbcImpl extends AbstractDAO<Presenter> implements Pres
             stmt.setString(6, presenter.getEmail());
             stmt.setString(7, presenter.getSpecialization());
             stmt.setLong(8, id);
-            stmt.executeUpdate();
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected != 1) {
+                throw new ResourceNotFoundException("The presenter with the id " + id + " not found in the database");
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
