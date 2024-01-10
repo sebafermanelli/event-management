@@ -27,10 +27,10 @@ Practice 3
 
 - Extra homework:
     - The database scheme consists of four tables:
-    - # Product(maker, model, type)
-    - # PC(code, model, speed, ram, hd, cd, price)
-    - # Laptop(code, model, speed, ram, hd, screen, price)
-    - # Printer(code, model, color, type, price)
+    - Product(maker, model, type)
+    - PC(code, model, speed, ram, hd, cd, price)
+    - Laptop(code, model, speed, ram, hd, screen, price)
+    - Printer(code, model, color, type, price)
     - The Product table contains data on the maker, model number, and type of product ('PC', 'Laptop', or 'Printer'). It is assumed that model
       numbers
       in the Product table are unique for all makers and product types. Each personal computer in the PC table is unambiguously identified by a unique
