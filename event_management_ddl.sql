@@ -33,7 +33,7 @@ CREATE TABLE `client` (
   `email` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `cuit_UNIQUE` (`cuit`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -54,7 +54,7 @@ CREATE TABLE `employee` (
   `salary` decimal(10,0) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `cuil_UNIQUE` (`cuil`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -74,7 +74,7 @@ CREATE TABLE `event` (
   `address` varchar(255) NOT NULL,
   `description` text,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -86,16 +86,15 @@ DROP TABLE IF EXISTS `event_employee`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `event_employee` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `role` varchar(255) NOT NULL,
   `employee_id` bigint unsigned NOT NULL,
   `event_id` bigint unsigned NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `uq_role_event_employee` (`employee_id`,`role`,`event_id`),
+  UNIQUE KEY `uq_role_event_employee` (`employee_id`,`event_id`),
   KEY `fk_employee_id_event_employee_idx` (`employee_id`),
   KEY `fk_event_id_event_employee_idx` (`event_id`) /*!80000 INVISIBLE */,
-  CONSTRAINT `fk_employee_id_event_employee` FOREIGN KEY (`id`) REFERENCES `employee` (`id`),
+  CONSTRAINT `fk_employee_id_event_employee` FOREIGN KEY (`employee_id`) REFERENCES `employee` (`id`),
   CONSTRAINT `fk_event_id_event_employee` FOREIGN KEY (`event_id`) REFERENCES `event` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -120,7 +119,7 @@ CREATE TABLE `presentation` (
   KEY `fk_presenter_id_presentation_idx` (`presenter_id`),
   CONSTRAINT `fk_presenter_id_presentation` FOREIGN KEY (`presenter_id`) REFERENCES `presenter` (`id`),
   CONSTRAINT `fk_room_id_presentation` FOREIGN KEY (`room_id`) REFERENCES `room` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -140,7 +139,7 @@ CREATE TABLE `presentation_ticket` (
   KEY `fk_presentation_id_presentation_ticket` (`presentation_id`),
   CONSTRAINT `fk_presentation_id_presentation_ticket` FOREIGN KEY (`presentation_id`) REFERENCES `presentation` (`id`),
   CONSTRAINT `fk_ticket_id_presentation_ticket` FOREIGN KEY (`ticket_id`) REFERENCES `ticket` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -201,7 +200,7 @@ CREATE TABLE `stand` (
   KEY `fk_client_id_stand_idx` (`client_id`),
   CONSTRAINT `fk_client_id_stand` FOREIGN KEY (`client_id`) REFERENCES `client` (`id`),
   CONSTRAINT `fk_room_id_stand` FOREIGN KEY (`room_id`) REFERENCES `room` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -225,7 +224,7 @@ CREATE TABLE `ticket` (
   CONSTRAINT `fk_attendee_id_ticket` FOREIGN KEY (`attendee_id`) REFERENCES `visitor` (`id`),
   CONSTRAINT `fk_buyer_id_ticket` FOREIGN KEY (`buyer_id`) REFERENCES `visitor` (`id`),
   CONSTRAINT `fk_event_id_ticket` FOREIGN KEY (`event_id`) REFERENCES `event` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -245,7 +244,7 @@ CREATE TABLE `visitor` (
   `email` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `cuil_UNIQUE` (`cuil`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -257,4 +256,4 @@ CREATE TABLE `visitor` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-12-24 16:29:06
+-- Dump completed on 2024-01-09 22:18:07
