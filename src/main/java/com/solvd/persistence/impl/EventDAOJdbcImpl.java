@@ -6,10 +6,7 @@ import com.solvd.persistence.AbstractDAO;
 import com.solvd.persistence.EventDAO;
 import com.solvd.persistence.PersistenceConfigJdbc;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
@@ -27,8 +24,8 @@ public class EventDAOJdbcImpl extends AbstractDAO<Event> implements EventDAO {
             stmt.setString(1, event.getName());
             stmt.setString(2, event.getTheme());
             stmt.setLong(3, event.getBaseTicketPrice());
-            stmt.setDate(4, event.getStartDate());
-            stmt.setDate(5, event.getEndDate());
+            stmt.setDate(4, Date.valueOf(event.getStartDate()));
+            stmt.setDate(5, Date.valueOf(event.getEndDate()));
             stmt.setString(6, event.getAddress());
             stmt.setString(7, event.getDescription());
             int rowsAffected = stmt.executeUpdate();
@@ -58,8 +55,8 @@ public class EventDAOJdbcImpl extends AbstractDAO<Event> implements EventDAO {
                 event.setName(resultSet.getString(2));
                 event.setTheme(resultSet.getString(3));
                 event.setBaseTicketPrice(resultSet.getLong(4));
-                event.setStartDate(resultSet.getDate(5));
-                event.setEndDate(resultSet.getDate(6));
+                event.setStartDate(resultSet.getDate(5).toLocalDate());
+                event.setEndDate(resultSet.getDate(6).toLocalDate());
                 event.setAddress(resultSet.getString(7));
                 event.setDescription(resultSet.getString(8));
                 events.add(event);
@@ -84,8 +81,8 @@ public class EventDAOJdbcImpl extends AbstractDAO<Event> implements EventDAO {
                 event.setName(resultSet.getString(2));
                 event.setTheme(resultSet.getString(3));
                 event.setBaseTicketPrice(resultSet.getLong(4));
-                event.setStartDate(resultSet.getDate(5));
-                event.setEndDate(resultSet.getDate(6));
+                event.setStartDate(resultSet.getDate(5).toLocalDate());
+                event.setEndDate(resultSet.getDate(6).toLocalDate());
                 event.setAddress(resultSet.getString(7));
                 event.setDescription(resultSet.getString(8));
                 return Optional.of(event);
@@ -112,8 +109,8 @@ public class EventDAOJdbcImpl extends AbstractDAO<Event> implements EventDAO {
                 event.setName(resultSet.getString(2));
                 event.setTheme(resultSet.getString(3));
                 event.setBaseTicketPrice(resultSet.getLong(4));
-                event.setStartDate(resultSet.getDate(5));
-                event.setEndDate(resultSet.getDate(6));
+                event.setStartDate(resultSet.getDate(5).toLocalDate());
+                event.setEndDate(resultSet.getDate(6).toLocalDate());
                 event.setAddress(resultSet.getString(7));
                 event.setDescription(resultSet.getString(8));
                 events.add(event);
@@ -138,8 +135,8 @@ public class EventDAOJdbcImpl extends AbstractDAO<Event> implements EventDAO {
                 event.setName(resultSet.getString(2));
                 event.setTheme(resultSet.getString(3));
                 event.setBaseTicketPrice(resultSet.getLong(4));
-                event.setStartDate(resultSet.getDate(5));
-                event.setEndDate(resultSet.getDate(6));
+                event.setStartDate(resultSet.getDate(5).toLocalDate());
+                event.setEndDate(resultSet.getDate(6).toLocalDate());
                 event.setAddress(resultSet.getString(7));
                 event.setDescription(resultSet.getString(8));
                 return Optional.of(event);
@@ -176,8 +173,8 @@ public class EventDAOJdbcImpl extends AbstractDAO<Event> implements EventDAO {
             stmt.setString(1, event.getName());
             stmt.setString(2, event.getTheme());
             stmt.setLong(3, event.getBaseTicketPrice());
-            stmt.setDate(4, event.getStartDate());
-            stmt.setDate(5, event.getEndDate());
+            stmt.setDate(4, Date.valueOf(event.getStartDate()));
+            stmt.setDate(5, Date.valueOf(event.getEndDate()));
             stmt.setString(6, event.getAddress());
             stmt.setString(7, event.getDescription());
             stmt.setLong(8, id);

@@ -1,0 +1,72 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:complexType name="employeeType">
+        <xs:all>
+            <xs:element name="cuil" type="xs:string"/>
+            <xs:element name="firstName" type="xs:string"/>
+            <xs:element name="lastName" type="xs:string"/>
+            <xs:element name="address" type="xs:string"/>
+            <xs:element name="phone" type="xs:string"/>
+            <xs:element name="email" type="xs:string"/>
+            <xs:element name="salary" type="xs:decimal"/>
+        </xs:all>
+        <xs:attribute name="id" type="xs:long" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="employeesType">
+        <xs:sequence>
+            <xs:element name="employee" type="employeeType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="eventType">
+        <xs:sequence>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="theme" type="xs:string"/>
+            <xs:element name="baseTicketPrice" type="xs:long"/>
+            <xs:element name="startDate" type="xs:string"/>
+            <xs:element name="endDate" type="xs:string"/>
+            <xs:element name="address" type="xs:string"/>
+            <xs:element name="description" type="xs:string"/>
+            <xs:element name="employees" type="employeesType"/>
+        </xs:sequence>
+        <xs:attribute name="id" type="xs:long" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="roomType">
+        <xs:sequence>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="surface" type="xs:long"/>
+            <xs:element name="capacity" type="xs:integer"/>
+            <xs:element name="status" type="xs:string"/>
+            <xs:element name="event" type="eventType"/>
+        </xs:sequence>
+        <xs:attribute name="id" type="xs:long" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="presenterType">
+        <xs:sequence>
+            <xs:element name="cuil" type="xs:string"/>
+            <xs:element name="firstName" type="xs:string"/>
+            <xs:element name="lastName" type="xs:string"/>
+            <xs:element name="address" type="xs:string"/>
+            <xs:element name="phone" type="xs:string"/>
+            <xs:element name="email" type="xs:string"/>
+            <xs:element name="specialization" type="xs:string"/>
+        </xs:sequence>
+        <xs:attribute name="id" type="xs:long" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="presentationType">
+        <xs:sequence>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="description" type="xs:string"/>
+            <xs:element name="startDateTime" type="xs:string"/>
+            <xs:element name="endDateTime" type="xs:string"/>
+            <xs:element name="ticketPrice" type="xs:long"/>
+            <xs:element name="room" type="roomType"/>
+            <xs:element name="presenter" type="presenterType"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:element name="presentation" type="presentationType"/>
+</xs:schema>

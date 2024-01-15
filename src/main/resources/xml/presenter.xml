@@ -1,0 +1,9 @@
+<presenter xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="presenter.xsd">
+    <cuil>20328729935</cuil>
+    <firstName>Gerardo</firstName>
+    <lastName>Perez</lastName>
+    <address>Av. Santa Fe 3823, C1425 CABA</address>
+    <phone>+5494728972982</phone>
+    <email>gerardo.perez@gmail.com</email>
+    <specialization>Mechanical Engineer</specialization>
+</presenter>

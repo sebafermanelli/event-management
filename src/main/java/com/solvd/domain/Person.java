@@ -1,5 +1,9 @@
 package com.solvd.domain;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+
+@XmlAccessorType(XmlAccessType.FIELD)
 public abstract class Person extends BaseEntity {
     protected String cuil;
     protected String firstName;

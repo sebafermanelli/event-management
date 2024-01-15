@@ -1,12 +1,26 @@
 package com.solvd.domain;
 
-import java.sql.Date;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.solvd.parser.JsonLocalDateAdapter;
+import com.solvd.parser.XmlLocalDateAdapter;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import java.time.LocalDate;
+
+@XmlRootElement(name = "presentation")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Presentation extends BaseEntity {
     private String name;
     private String description;
-    private Date startDateTime;
-    private Date endDateTime;
+    @XmlJavaTypeAdapter(XmlLocalDateAdapter.class)
+    @JsonDeserialize(using = JsonLocalDateAdapter.class)
+    private LocalDate startDateTime;
+    @XmlJavaTypeAdapter(XmlLocalDateAdapter.class)
+    @JsonDeserialize(using = JsonLocalDateAdapter.class)
+    private LocalDate endDateTime;
     private Long ticketPrice;
     private Room room = new Room();
     private Presenter presenter = new Presenter();
@@ -27,19 +41,19 @@ public class Presentation extends BaseEntity {
         this.description = description;
     }
 
-    public Date getStartDateTime() {
+    public LocalDate getStartDateTime() {
         return startDateTime;
     }
 
-    public void setStartDateTime(Date startDateTime) {
+    public void setStartDateTime(LocalDate startDateTime) {
         this.startDateTime = startDateTime;
     }
 
-    public Date getEndDateTime() {
+    public LocalDate getEndDateTime() {
         return endDateTime;
     }
 
-    public void setEndDateTime(Date endDateTime) {
+    public void setEndDateTime(LocalDate endDateTime) {
         this.endDateTime = endDateTime;
     }
 

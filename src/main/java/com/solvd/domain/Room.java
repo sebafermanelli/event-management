@@ -1,5 +1,11 @@
 package com.solvd.domain;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement(name = "room")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Room extends BaseEntity {
     private String name;
     private Long surface;

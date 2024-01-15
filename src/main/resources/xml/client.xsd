@@ -1,0 +1,13 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:complexType name="clientType">
+        <xs:sequence>
+            <xs:element name="cuit" type="xs:string"/>
+            <xs:element name="businessName" type="xs:string"/>
+            <xs:element name="address" type="xs:string"/>
+            <xs:element name="phone" type="xs:string"/>
+            <xs:element name="email" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:element name="client" type="clientType"/>
+</xs:schema>

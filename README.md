@@ -66,3 +66,9 @@ Practice 5
 
 - Add Jackson’s annotation to the hierarchy. Date, List, and complex objects should be covered.
 - Parse JSON using Jackson.
+
+Practice 6
+
+- Add Factory, Abstract Factory, Builder, Listener, Facade, Decorator, Proxy, Strategy, MVC patterns to your current
+  project.
+- Refactor code for the current project to satisfy SOLID principles.

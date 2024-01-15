@@ -1,0 +1,9 @@
+<employee xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="employee.xsd">
+    <cuil>20428378825</cuil>
+    <firstName>Juan</firstName>
+    <lastName>Fernandez</lastName>
+    <address>San Juan 5203, C1425 CABA</address>
+    <phone>+5493412834729</phone>
+    <email>juan.rodriguez@gmail.com</email>
+    <salary>340000</salary>
+</employee>

@@ -1,0 +1,9 @@
+{
+    "id": 1,
+    "cuil": "12345678",
+    "firstName": "John",
+    "lastName": "Doe",
+    "address": "San Fernando 123, C1234 City",
+    "phone": "+542222343434",
+    "email": "john.doe@gmail.com"
+}

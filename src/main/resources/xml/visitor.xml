@@ -1,0 +1,8 @@
+<visitor xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="visitor.xsd">
+    <cuil>12345678</cuil>
+    <firstName>John</firstName>
+    <lastName>Doe</lastName>
+    <address>San Fernando 123, C1234 City</address>
+    <phone>+542222343434</phone>
+    <email>john.doe@gmail.com</email>
+</visitor>

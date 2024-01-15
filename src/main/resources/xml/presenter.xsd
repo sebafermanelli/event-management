@@ -1,0 +1,15 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:complexType name="presenterType">
+        <xs:sequence>
+            <xs:element name="cuil" type="xs:string"/>
+            <xs:element name="firstName" type="xs:string"/>
+            <xs:element name="lastName" type="xs:string"/>
+            <xs:element name="address" type="xs:string"/>
+            <xs:element name="phone" type="xs:string"/>
+            <xs:element name="email" type="xs:string"/>
+            <xs:element name="specialization" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:element name="presenter" type="presenterType"/>
+</xs:schema>

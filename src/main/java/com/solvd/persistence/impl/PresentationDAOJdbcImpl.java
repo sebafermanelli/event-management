@@ -1,16 +1,12 @@
 package com.solvd.persistence.impl;
 
-import com.solvd.domain.Event;
 import com.solvd.domain.Presentation;
 import com.solvd.exception.ResourceNotFoundException;
 import com.solvd.persistence.AbstractDAO;
 import com.solvd.persistence.PersistenceConfigJdbc;
 import com.solvd.persistence.PresentationDAO;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
@@ -27,8 +23,8 @@ public class PresentationDAOJdbcImpl extends AbstractDAO<Presentation> implement
         try (PreparedStatement stmt = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, presentation.getName());
             stmt.setString(2, presentation.getDescription());
-            stmt.setDate(3, presentation.getStartDateTime());
-            stmt.setDate(4, presentation.getEndDateTime());
+            stmt.setDate(3, Date.valueOf(presentation.getStartDateTime()));
+            stmt.setDate(4, Date.valueOf(presentation.getEndDateTime()));
             stmt.setLong(5, presentation.getTicketPrice());
             stmt.setLong(6, presentation.getRoom().getId());
             stmt.setLong(7, presentation.getPresenter().getId());
@@ -58,8 +54,8 @@ public class PresentationDAOJdbcImpl extends AbstractDAO<Presentation> implement
                 presentation.setId(resultSet.getLong(1));
                 presentation.setName(resultSet.getString(2));
                 presentation.setDescription(resultSet.getString(3));
-                presentation.setStartDateTime(resultSet.getDate(4));
-                presentation.setEndDateTime(resultSet.getDate(5));
+                presentation.setStartDateTime(resultSet.getDate(4).toLocalDate());
+                presentation.setEndDateTime(resultSet.getDate(5).toLocalDate());
                 presentation.setTicketPrice(resultSet.getLong(6));
                 presentation.getRoom().setId(resultSet.getLong(7));
                 presentation.getPresenter().setId(resultSet.getLong(8));
@@ -84,8 +80,8 @@ public class PresentationDAOJdbcImpl extends AbstractDAO<Presentation> implement
                 presentation.setId(resultSet.getLong(1));
                 presentation.setName(resultSet.getString(2));
                 presentation.setDescription(resultSet.getString(3));
-                presentation.setStartDateTime(resultSet.getDate(4));
-                presentation.setEndDateTime(resultSet.getDate(5));
+                presentation.setStartDateTime(resultSet.getDate(4).toLocalDate());
+                presentation.setEndDateTime(resultSet.getDate(5).toLocalDate());
                 presentation.setTicketPrice(resultSet.getLong(6));
                 presentation.getRoom().setId(resultSet.getLong(7));
                 presentation.getPresenter().setId(resultSet.getLong(8));
@@ -112,8 +108,8 @@ public class PresentationDAOJdbcImpl extends AbstractDAO<Presentation> implement
                 presentation.setId(resultSet.getLong(1));
                 presentation.setName(resultSet.getString(2));
                 presentation.setDescription(resultSet.getString(3));
-                presentation.setStartDateTime(resultSet.getDate(4));
-                presentation.setEndDateTime(resultSet.getDate(5));
+                presentation.setStartDateTime(resultSet.getDate(4).toLocalDate());
+                presentation.setEndDateTime(resultSet.getDate(5).toLocalDate());
                 presentation.setTicketPrice(resultSet.getLong(6));
                 presentation.getRoom().setId(resultSet.getLong(7));
                 presentation.getPresenter().setId(resultSet.getLong(8));
@@ -138,8 +134,8 @@ public class PresentationDAOJdbcImpl extends AbstractDAO<Presentation> implement
                 presentation.setId(resultSet.getLong(1));
                 presentation.setName(resultSet.getString(2));
                 presentation.setDescription(resultSet.getString(3));
-                presentation.setStartDateTime(resultSet.getDate(4));
-                presentation.setEndDateTime(resultSet.getDate(5));
+                presentation.setStartDateTime(resultSet.getDate(4).toLocalDate());
+                presentation.setEndDateTime(resultSet.getDate(5).toLocalDate());
                 presentation.setTicketPrice(resultSet.getLong(6));
                 presentation.getRoom().setId(resultSet.getLong(7));
                 presentation.getPresenter().setId(resultSet.getLong(8));
@@ -176,8 +172,8 @@ public class PresentationDAOJdbcImpl extends AbstractDAO<Presentation> implement
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, presentation.getName());
             stmt.setString(2, presentation.getDescription());
-            stmt.setDate(3, presentation.getStartDateTime());
-            stmt.setDate(4, presentation.getEndDateTime());
+            stmt.setDate(3, Date.valueOf(presentation.getStartDateTime()));
+            stmt.setDate(4, Date.valueOf(presentation.getEndDateTime()));
             stmt.setLong(5, presentation.getTicketPrice());
             stmt.setLong(6, presentation.getRoom().getId());
             stmt.setLong(7, presentation.getPresenter().getId());

@@ -1,0 +1,22 @@
+{
+    "id": 1,
+    "name": "Salon Moto 2023",
+    "theme": "Motorcycles Exposition",
+    "baseTicketPrice": 3500,
+    "startDate": "2023-12-19 09:00:00",
+    "endDate": "2023-12-22 22:00:00",
+    "address": "Av. Sarmiento 2704, C1425 CABA",
+    "description": "Enjoy live music, delicious food, and connect with like-minded individuals who share your passion for the open road.",
+    "employees": [
+        {
+            "id": 1,
+            "cuil": "20428378825",
+            "firstName": "Juan",
+            "lastName": "Fernandez",
+            "address": "San Juan 5203, C1425 CABA",
+            "phone": "+5493412834729",
+            "email": "juan.rodriguez@gmail.com",
+            "salary": 340000
+        }
+    ]
+}

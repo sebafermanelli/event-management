@@ -1,0 +1,7 @@
+<client xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="client.xsd">
+    <cuit>20224448235</cuit>
+    <businessName>Ducati</businessName>
+    <address>La Madrid 105, C1425 CABA</address>
+    <phone>+5492384927738</phone>
+    <email>ducati@gmail.com</email>
+</client>

@@ -1,0 +1,29 @@
+<room xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="room.xsd">
+    <name>North room</name>
+    <surface>200</surface>
+    <capacity>180</capacity>
+    <status>Available</status>
+    <event id="1">
+        <name>Salon Moto 2023</name>
+        <theme>Motorcycles Exposition</theme>
+        <baseTicketPrice>3500</baseTicketPrice>
+        <startDate>2023-12-19 09:00:00</startDate>
+        <endDate>2023-12-22 22:00:00</endDate>
+        <address>Av. Sarmiento 2704, C1425 CABA</address>
+        <description>Enjoy live music, delicious food, and connect with like-minded individuals who share your
+            passion for
+            the open road.
+        </description>
+        <employees>
+            <employee id="1">
+                <cuil>20428378825</cuil>
+                <firstName>Juan</firstName>
+                <lastName>Fernandez</lastName>
+                <address>San Juan 5203, C1425 CABA</address>
+                <phone>+5493412834729</phone>
+                <email>juan.rodriguez@gmail.com</email>
+                <salary>340000</salary>
+            </employee>
+        </employees>
+    </event>
+</room>

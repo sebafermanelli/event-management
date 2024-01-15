@@ -1,8 +1,13 @@
 package com.solvd.domain;
 
 import com.google.gson.Gson;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAttribute;
 
+@XmlAccessorType(XmlAccessType.FIELD)
 public abstract class BaseEntity {
+  @XmlAttribute(name = "id")
   protected Long id;
 
   public Long getId() {
