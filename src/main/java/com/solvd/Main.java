@@ -9,9 +9,8 @@ public class Main {
     public static void main(String[] args) {
         LOGGER.info("Starting...");
 ////        MyBatis Test
-//        EmployeeServiceMybatisImpl employeeServiceMybatis = new EmployeeServiceMybatisImpl();
-//        Collection<Employee> employees = employeeServiceMybatis.getAll();
-//        employees.forEach(employee -> LOGGER.info(employee.toString()));
+//        ClientServiceImpl clientService = new ClientServiceImpl("RELATIONAL", "MYBATIS");
+//        clientService.getAll().forEach(LOGGER::info);
 //
 ////        Parsers
 //        File xmlFile = new File("src/main/resources/xml/event.xml");
@@ -63,5 +62,17 @@ public class Main {
 //        } catch (IOException e) {
 //            throw new RuntimeException(e);
 //        }
+//
+////        Builder pattern
+//        Client c = Client.builder()
+//                .cuit("20999887775")
+//                .businessName("Husqvarna")
+//                .address("Juan B. Justo 1112, C1425 CABA")
+//                .email("husqvarna@gmail.com")
+//                .phone("+549118293441")
+//                .build();
+//
+////        Listener pattern
+//        ListenersHolder.subscribe(new EmployeeListenerImpl());
     }
 }

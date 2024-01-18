@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.solvd.persistence.PresentationDAO">
+<mapper namespace="com.solvd.persistence.PresentationRepository">
     <resultMap id="PresentationResultMap" type="com.solvd.domain.Presentation" autoMapping="false">
         <id property="id" column="presentation_id"/>
         <result property="name" column="presentation_name"/>
@@ -11,8 +11,8 @@
         <result property="startDateTime" column="presentation_start_datetime"/>
         <result property="endDateTime" column="presentation_end_datetime"/>
         <result property="ticketPrice" column="presentation_ticket_price"/>
-        <association property="room" resultMap="com.solvd.persistence.RoomDAO.RoomResultMap"/>
-        <association property="presenter" resultMap="com.solvd.persistence.PresenterDAO.PresenterResultMap"/>
+        <association property="room" resultMap="com.solvd.persistence.RoomRepository.RoomResultMap"/>
+        <association property="presenter" resultMap="com.solvd.persistence.PresenterRepository.PresenterResultMap"/>
     </resultMap>
 
     <insert id="save" keyColumn="id" keyProperty="id" useGeneratedKeys="true">

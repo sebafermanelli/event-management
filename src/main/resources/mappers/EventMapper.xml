@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.solvd.persistence.EventDAO">
+<mapper namespace="com.solvd.persistence.EventRepository">
     <resultMap id="EventResultMap" type="com.solvd.domain.Event" autoMapping="false">
         <id property="id" column="event_id"/>
         <result property="name" column="event_name"/>
@@ -13,7 +13,7 @@
         <result property="endDate" column="event_end_date"/>
         <result property="address" column="event_address"/>
         <result property="description" column="event_description"/>
-        <collection property="employees" resultMap="com.solvd.persistence.EmployeeDAO.EmployeeResultMap"/>
+        <collection property="employees" resultMap="com.solvd.persistence.EmployeeRepository.EmployeeResultMap"/>
     </resultMap>
 
     <insert id="save" keyColumn="id" keyProperty="id" useGeneratedKeys="true">

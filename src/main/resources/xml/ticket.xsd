@@ -95,6 +95,7 @@
             <xs:element name="buyer" type="visitorType"/>
             <xs:element name="presentations" type="presentationsType"/>
         </xs:sequence>
+        <xs:attribute name="id" type="xs:long" use="required"/>
     </xs:complexType>
 
     <xs:element name="ticket" type="ticketType"/>

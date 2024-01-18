@@ -3,7 +3,7 @@
   <component name="SqlDialectMappings">
     <file url="file://$PROJECT_DIR$/event_management_ddl.sql" dialect="MySQL" />
     <file url="file://$PROJECT_DIR$/event_management_dml_querys.sql" dialect="MySQL" />
-    <file url="file://$PROJECT_DIR$/src/main/java/com/solvd/persistence/impl/ClientDAOJdbcImpl.java" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/src/main/java/com/solvd/persistence/impl/jdbc/ClientRepositoryJdbcImpl.java" dialect="MySQL" />
     <file url="PROJECT" dialect="MySQL" />
   </component>
 </project>

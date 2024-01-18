@@ -1,4 +1,5 @@
-<ticket xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ticket.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<ticket id="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ticket.xsd">
     <cost>4500</cost>
     <event id="1">
         <name>Salon Moto 2023</name>

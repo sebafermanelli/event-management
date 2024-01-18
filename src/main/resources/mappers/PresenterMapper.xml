@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.solvd.persistence.PresenterDAO">
+<mapper namespace="com.solvd.persistence.PresenterRepository">
     <resultMap id="PresenterResultMap" type="com.solvd.domain.Presenter" autoMapping="false">
         <id property="id" column="presenter_id"/>
         <result property="cuil" column="presenter_cuil"/>

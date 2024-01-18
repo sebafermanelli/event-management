@@ -1,5 +1,6 @@
 package com.solvd.domain;
 
+import com.solvd.domain.builder.PersonBuilder;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 

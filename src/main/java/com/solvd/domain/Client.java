@@ -1,5 +1,6 @@
 package com.solvd.domain;
 
+import com.solvd.domain.builder.ClientBuilder;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
@@ -12,6 +13,10 @@ public class Client extends BaseEntity {
     private String address;
     private String phone;
     private String email;
+
+    public static ClientBuilder builder() {
+        return new ClientBuilder();
+    }
 
     public String getCuit() {
         return cuit;

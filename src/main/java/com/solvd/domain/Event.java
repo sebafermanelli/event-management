@@ -1,13 +1,16 @@
 package com.solvd.domain;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.solvd.parser.JsonLocalDateAdapter;
-import com.solvd.parser.XmlLocalDateAdapter;
+import com.solvd.domain.builder.EventBuilder;
+import com.solvd.listener.ListenersHolder;
+import com.solvd.parser.JsonDateAdapter;
+import com.solvd.parser.XmlDateAdapter;
 import jakarta.xml.bind.annotation.*;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import java.time.LocalDate;
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @XmlRootElement(name = "event")
@@ -15,18 +18,30 @@ import java.util.List;
 public class Event extends BaseEntity {
     private String name;
     private String theme;
-    private Long baseTicketPrice;
-    @XmlJavaTypeAdapter(XmlLocalDateAdapter.class)
-    @JsonDeserialize(using = JsonLocalDateAdapter.class)
-    private LocalDate startDate;
-    @XmlJavaTypeAdapter(XmlLocalDateAdapter.class)
-    @JsonDeserialize(using = JsonLocalDateAdapter.class)
-    private LocalDate endDate;
+    private BigDecimal baseTicketPrice;
+
+    @XmlJavaTypeAdapter(XmlDateAdapter.class)
+    @JsonDeserialize(using = JsonDateAdapter.class)
+    private Date startDate;
+
+    @XmlJavaTypeAdapter(XmlDateAdapter.class)
+    @JsonDeserialize(using = JsonDateAdapter.class)
+    private Date endDate;
+
     private String address;
     private String description;
+
     @XmlElementWrapper(name = "employees")
     @XmlElement(name = "employee")
-    private List<Employee> employees = new ArrayList<>();
+    private List<Employee> employees;
+
+    public Event() {
+        this.employees = new ArrayList<>();
+    }
+
+    public static EventBuilder builder() {
+        return new EventBuilder();
+    }
 
     public String getName() {
         return name;
@@ -44,27 +59,27 @@ public class Event extends BaseEntity {
         this.theme = theme;
     }
 
-    public Long getBaseTicketPrice() {
+    public BigDecimal getBaseTicketPrice() {
         return baseTicketPrice;
     }
 
-    public void setBaseTicketPrice(Long baseTicketPrice) {
+    public void setBaseTicketPrice(BigDecimal baseTicketPrice) {
         this.baseTicketPrice = baseTicketPrice;
     }
 
-    public LocalDate getStartDate() {
+    public Date getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(LocalDate startDate) {
+    public void setStartDate(Date startDate) {
         this.startDate = startDate;
     }
 
-    public LocalDate getEndDate() {
+    public Date getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(LocalDate endDate) {
+    public void setEndDate(Date endDate) {
         this.endDate = endDate;
     }
 
@@ -90,5 +105,15 @@ public class Event extends BaseEntity {
 
     public void setEmployees(List<Employee> employees) {
         this.employees = employees;
+    }
+
+    public void addEmployee(Employee employee) {
+        ListenersHolder.onNewEmployee(employee, this);
+        employees.add(employee);
+    }
+
+    public void removeEmployee(Employee employee) {
+        ListenersHolder.onEmployeeDismissal(employee, this);
+        employees.remove(employee);
     }
 }

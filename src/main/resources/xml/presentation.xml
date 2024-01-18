@@ -1,4 +1,6 @@
-<presentation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="presentation.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<presentation id="1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:noNamespaceSchemaLocation="presentation.xsd">
     <name>Motorcycles on the road</name>
     <description>Join us for an exhilarating exploration at the Motorcycles on the Road conference, where enthusiasts,
         industry experts, and visionaries come together to delve into the dynamic world of two-wheel adventures

@@ -1,17 +1,28 @@
 package com.solvd.domain;
 
+import com.solvd.domain.builder.RoomBuilder;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
+
+import java.math.BigDecimal;
 
 @XmlRootElement(name = "room")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Room extends BaseEntity {
     private String name;
-    private Long surface;
-    private Long capacity;
+    private BigDecimal surface;
+    private Integer capacity;
     private String status;
-    private Event event = new Event();
+    private Event event;
+
+    public Room() {
+        this.event = new Event();
+    }
+
+    public static RoomBuilder builder() {
+        return new RoomBuilder();
+    }
 
     public String getName() {
         return name;
@@ -21,19 +32,19 @@ public class Room extends BaseEntity {
         this.name = name;
     }
 
-    public Long getSurface() {
+    public BigDecimal getSurface() {
         return surface;
     }
 
-    public void setSurface(Long surface) {
+    public void setSurface(BigDecimal surface) {
         this.surface = surface;
     }
 
-    public Long getCapacity() {
+    public Integer getCapacity() {
         return capacity;
     }
 
-    public void setCapacity(Long capacity) {
+    public void setCapacity(Integer capacity) {
         this.capacity = capacity;
     }
 

@@ -66,6 +66,7 @@
             <xs:element name="room" type="roomType"/>
             <xs:element name="presenter" type="presenterType"/>
         </xs:sequence>
+        <xs:attribute name="id" type="xs:long" use="required"/>
     </xs:complexType>
 
     <xs:element name="presentation" type="presentationType"/>

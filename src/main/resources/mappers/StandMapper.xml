@@ -3,12 +3,12 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.solvd.persistence.StandDAO">
+<mapper namespace="com.solvd.persistence.StandRepository">
     <resultMap id="StandResultMap" type="com.solvd.domain.Stand" autoMapping="false">
         <id property="id" column="stand_id"/>
         <result property="price" column="stand_price"/>
-        <association property="room" resultMap="com.solvd.persistence.RoomDAO.RoomResultMap"/>
-        <association property="client" resultMap="com.solvd.persistence.ClientDAO.ClientResultMap"/>
+        <association property="room" resultMap="com.solvd.persistence.RoomRepository.RoomResultMap"/>
+        <association property="client" resultMap="com.solvd.persistence.ClientRepository.ClientResultMap"/>
     </resultMap>
 
     <insert id="save" keyColumn="id" keyProperty="id" useGeneratedKeys="true">

@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.solvd.persistence.ClientDAO">
+<mapper namespace="com.solvd.persistence.ClientRepository">
     <resultMap id="ClientResultMap" type="com.solvd.domain.Client" autoMapping="false">
         <id property="id" column="client_id"/>
         <result property="cuit" column="client_cuit"/>

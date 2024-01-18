@@ -9,6 +9,7 @@
             <xs:element name="email" type="xs:string"/>
             <xs:element name="salary" type="xs:decimal"/>
         </xs:sequence>
+        <xs:attribute name="id" type="xs:long" use="required"/>
     </xs:complexType>
 
     <xs:element name="employee" type="employeeType"/>

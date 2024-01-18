@@ -1,29 +1,43 @@
 package com.solvd.domain;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.solvd.parser.JsonLocalDateAdapter;
-import com.solvd.parser.XmlLocalDateAdapter;
+import com.solvd.domain.builder.PresentationBuilder;
+import com.solvd.parser.JsonDateAdapter;
+import com.solvd.parser.XmlDateAdapter;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import java.time.LocalDate;
+import java.math.BigDecimal;
+import java.util.Date;
 
 @XmlRootElement(name = "presentation")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Presentation extends BaseEntity {
     private String name;
     private String description;
-    @XmlJavaTypeAdapter(XmlLocalDateAdapter.class)
-    @JsonDeserialize(using = JsonLocalDateAdapter.class)
-    private LocalDate startDateTime;
-    @XmlJavaTypeAdapter(XmlLocalDateAdapter.class)
-    @JsonDeserialize(using = JsonLocalDateAdapter.class)
-    private LocalDate endDateTime;
-    private Long ticketPrice;
-    private Room room = new Room();
-    private Presenter presenter = new Presenter();
+
+    @XmlJavaTypeAdapter(XmlDateAdapter.class)
+    @JsonDeserialize(using = JsonDateAdapter.class)
+    private Date startDateTime;
+
+    @XmlJavaTypeAdapter(XmlDateAdapter.class)
+    @JsonDeserialize(using = JsonDateAdapter.class)
+    private Date endDateTime;
+
+    private BigDecimal ticketPrice;
+    private Room room;
+    private Presenter presenter;
+
+    public Presentation() {
+        this.room = new Room();
+        this.presenter = new Presenter();
+    }
+
+    public static PresentationBuilder builder() {
+        return new PresentationBuilder();
+    }
 
     public String getName() {
         return name;
@@ -41,27 +55,27 @@ public class Presentation extends BaseEntity {
         this.description = description;
     }
 
-    public LocalDate getStartDateTime() {
+    public Date getStartDateTime() {
         return startDateTime;
     }
 
-    public void setStartDateTime(LocalDate startDateTime) {
+    public void setStartDateTime(Date startDateTime) {
         this.startDateTime = startDateTime;
     }
 
-    public LocalDate getEndDateTime() {
+    public Date getEndDateTime() {
         return endDateTime;
     }
 
-    public void setEndDateTime(LocalDate endDateTime) {
+    public void setEndDateTime(Date endDateTime) {
         this.endDateTime = endDateTime;
     }
 
-    public Long getTicketPrice() {
+    public BigDecimal getTicketPrice() {
         return ticketPrice;
     }
 
-    public void setTicketPrice(Long ticketPrice) {
+    public void setTicketPrice(BigDecimal ticketPrice) {
         this.ticketPrice = ticketPrice;
     }
 

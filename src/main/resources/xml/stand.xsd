@@ -60,6 +60,7 @@
             <xs:element name="room" type="roomType"/>
             <xs:element name="client" type="clientType"/>
         </xs:sequence>
+        <xs:attribute name="id" type="xs:long" use="required"/>
     </xs:complexType>
 
     <xs:element name="stand" type="standType"/>

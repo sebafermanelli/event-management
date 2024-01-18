@@ -1,21 +1,33 @@
 package com.solvd.domain;
 
+import com.solvd.domain.builder.StandBuilder;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
+import java.math.BigDecimal;
+
 @XmlRootElement(name = "stand")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Stand extends BaseEntity {
-    private Long price;
-    private Room room = new Room();
-    private Client client = new Client();
+    private BigDecimal price;
+    private Room room;
+    private Client client;
 
-    public Long getPrice() {
+    public Stand() {
+        this.room = new Room();
+        this.client = new Client();
+    }
+
+    public static StandBuilder builder() {
+        return new StandBuilder();
+    }
+
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(Long price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 

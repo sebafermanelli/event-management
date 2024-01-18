@@ -3,16 +3,16 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.solvd.persistence.TicketDAO">
+<mapper namespace="com.solvd.persistence.TicketRepository">
     <resultMap id="TicketResultMap" type="com.solvd.domain.Ticket" autoMapping="false">
         <id property="id" column="ticket_id"/>
         <result property="cost" column="ticket_cost"/>
-        <association property="event" resultMap="com.solvd.persistence.EventDAO.EventResultMap"/>
+        <association property="event" resultMap="com.solvd.persistence.EventRepository.EventResultMap"/>
         <association property="attendee" columnPrefix="attendee_"
-                     resultMap="com.solvd.persistence.VisitorDAO.VisitorResultMap"/>
+                     resultMap="com.solvd.persistence.VisitorRepository.VisitorResultMap"/>
         <association property="buyer" columnPrefix="buyer_"
-                     resultMap="com.solvd.persistence.VisitorDAO.VisitorResultMap"/>
-        <collection property="presentations" resultMap="com.solvd.persistence.PresentationDAO.PresentationResultMap"/>
+                     resultMap="com.solvd.persistence.VisitorRepository.VisitorResultMap"/>
+        <collection property="presentations" resultMap="com.solvd.persistence.PresentationRepository.PresentationResultMap"/>
     </resultMap>
 
     <insert id="save" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
